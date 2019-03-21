@@ -161,20 +161,30 @@ apaTables::apa.cor.table(attitude, filename = "table1.doc", table.number = 1)
 
 # Introduction
 
+
+We want to find out whether user diversity factors influence the users' awareness of the so-called filter bubble regarding political opinion formation. Additionally, we want to find out whether this differed between the Netherlands and Germany. As user diversity factors we will measure the following variables: Big 5 personality inventory (five variables), demographic features (three variables), facebook use (four variables), diversity of media use (six variables), political interest (two variables), political opinion (two variables).
 # Related Work
 
 # Methods
 We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+
+We will measure the awareness of filter bubbles using two criteria. For the first criterion we measure two initial variables: The first variable measure the agreement with seven political opinions on a scale from 0 to 100%, the second variable measure the perceived agreement of the nations‘ population with the same seven political opinions. The political opinions were presented as mock facebook posts and were polarizing in their content. For each of these variables we calculate the value as the mean from the eight measurements.  We use the mean difference between individual and perceived national agreement with our statements as the first criterion for the awareness of the filter bubble regarding political opinion formation. The second criterion is measured as the dichotomous decision of the participants whether they know the phenomenon. 
+
+
+
+
+
 
 ## Participants
 
 ## Material
 
 ## Procedure
-
+Participants from Germany received a german questionnaire, while participants from the Netherlands received a dutch questionnaire. Both questionnaires contained the same questions with the exception of an additional political opinion in the dutch version. National references (e.g., "the german goverment...") were adapted to the questionnaire version (e.g., "the dutch government..."). Furthermore, when asked about political parties or levels of education the national equivalents were used. 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
-
+We use correlation analysis, analysis of variance and multiple linear regressions to determine the influence of user diversity on user behavior and the awareness of filterbubbles.
 
 # Results
 
