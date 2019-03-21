@@ -1,0 +1,153 @@
+oldvar;newvar;description
+CollectorNm;CollectorNm;CollectorNm
+respondent_id;respondent_id;respondent_id
+collector_id;collector_id;collector_id
+date_created;date_created;date_created
+date_modified;date_modified;date_modified
+ip_address;ip_address;ip_address
+email_address;email_address;email_address
+first_name;first_name;first_name
+last_name;last_name;last_name
+custom_1;custom_1;custom_1
+q0001;gender;Sie sind:
+q0002;age;Wie alt sind Sie in Jahren?
+q0003;education;Welchen höchsten Bildungsabschluss besitzen Sie?
+q0003_other;q0003_other;Sonstiges (bitte angeben)
+q0004_0001;b5_e1;Ich bin eher zurückhaltend, reserviert
+q0004_0002;b5_a1;Ich schenke anderen leicht Vertrauen, glaube an das Gute im Menschen
+q0004_0003;b5_c1;Ich bin bequem, neige zur Faulheit
+q0004_0004;b5_n1;Ich bin entspannt, lasse mich durch Stress nicht aus der Ruhe bringen
+q0004_0005;b5_o1;Ich habe nur wenig künstlerisches Interesse
+q0004_0006;b5_e2;Ich gehe aus mir heraus, bin gesellig
+q0004_0007;b5_a2;Ich neige dazu, andere zu kritisieren
+q0004_0008;b5_c2;Ich erledige Aufgaben gründlich
+q0004_0009;b5_n2;Ich werde leicht nervös und unsicher
+q0004_0010;b5_o2;Ich habe eine aktive Vorstellungskraft, bin fantasievoll
+q0005_0001;q0005_0001;Wie optimistisch sind Sie im Allgemeinen?
+q0006_0001;q0006_0001;Wie pessimistisch sind Sie im Allgemeinen?
+q0007_0001;q0007_0001;Im Streit bleibe ich stets sachlich und objektiv
+q0007_0002;q0007_0002;Auch wenn ich selbst gestresst bin, behandle ich andere immer freundlich und zuvorkommend
+q0007_0003;q0007_0003;Wenn ich mich mit jemandem unterhalte, höre ich ihm immer aufmerksam zu
+q0007_0004;q0007_0004;Es ist schon mal vorgekommen, dass ich jemanden ausgenutzt habe
+q0007_0005;q0007_0005;Ich habe schon mal Müll einfach in die Landschaft oder auf die Straße geworfen
+q0007_0006;q0007_0006;Manchmal helfe ich jemandem nur, wenn ich eine Gegenleistung erwarten kann
+q0008_0001;q0008_0001;Zeitungen/Zeitschriften(offline)
+q0008_0002;q0008_0002;Zeitungen/Zeitschriften(online)
+q0008_0003;q0008_0003;Internet (ohne soziale Netzwerke)
+q0008_0004;q0008_0004;Radio(auch online)
+q0008_0005;q0008_0005;Fernsehen(auch online)
+q0008_0006;q0008_0006;Soziale Netzwerke generell
+q0008_0007;q0008_0007;Facebook explizit
+q0009_0001;q0009_0001;Fernsehen
+q0009_0002;q0009_0002;Internet (ohne soziale Netzwerke)
+q0009_0003;q0009_0003;Tageszeitungen
+q0009_0004;q0009_0004;Radio
+q0009_0005;q0009_0005;Facebook
+q0009_0006;q0009_0006;Soziale Netzwerke generell
+q0009_0007;q0009_0007;Gespräche mit Freunde/Familie etc.
+q0010;q0010;Wenn Sie ihren wöchentlichen Medienkonsum aufteilen müssten in klassische Medien und digitale Medien, wie hoch ist dann der Prozentsatz an digitalem Medienkonsum?
+q0011;q0011;Nutzen Sie Facebook?
+q0012_0001;q0012_0001;Auf Facebook lese ich eigentlich nur
+q0012_0002;q0012_0002;Auf Facebook teile ich häufig politische Inhalte
+q0012_0003;q0012_0003;Auf Facebook like ich oft politische Inhalte
+q0012_0004;q0012_0004;Auf Facebook kommentiere ich oft politische Inhalte
+q0013;q0013;Wie viele Kontakte haben Sie auf Facebook in etwa?
+q0014_0001;q0014_0001;Ich interessiere mich für Politik
+q0014_0002;q0014_0002;Ich informiere mich regelmäßig über politische Ereignisse
+q0014_0003;q0014_0003;Ich halte es für wichtig, mich an Wahlen zu beteiligen
+q0014_0004;q0014_0004;Ich habe schon mal aus Protest nicht an Wahlen teilgenommen
+q0014_0005;q0014_0005;Ich habe schon mal aus Protest andere Parteien gewählt
+q0014_0006;q0014_0006;Ich kann mir vorstellen, mich gesellschaftlich oder politisch zu engagieren(Bitte kreuzen Sie auch dann an, wenn Sie es bereits tun)
+q0014_0007;q0014_0007;Ich interessiere mich für Politik auf internationaler Ebene
+q0014_0008;q0014_0008;Ich kann mir vorstellen an politischen Demonstrationen teilzunehmen (Bitte kreuzen Sie auch dann an, wenn Sie es bereits tun)
+q0014_0009;q0014_0009;Ich interessiere mich für Politik innerhalb Europas
+q0014_0010;q0014_0010;Ich bin Mitglied einer Bürgerinitiative/Partei/Organisation oder eines Vereins
+q0014_0011;q0014_0011;Wichtige politische Fragen kann ich gut verstehen und einschätzen
+q0014_0012;q0014_0012;Ich traue mir zu, mich an einem Gespräch über politische Fragen aktiv zu beteiligen
+q0015;q0015;Viele Leute verwenden die Begriffe des linken politischen Spektrums und des rechten politischen Spektrums, wenn es darum geht, unterschiedliche Einstellungen zu kennzeichnen. Wenn Sie an Ihre eigenen politischen Ansichten denken, wo würden Sie diese auf e
+q0016_0001;q0016_0001;Eine wirkliche Demokratie ist erst möglich, wenn es keinen Kapitalismus mehr gibt
+q0016_0002;q0016_0002;Faschistische Tendenzen haben in Europa ein bedrohliches Ausmaß angenommen
+q0016_0003;q0016_0003;Der Sozialismus ist im Grunde eine gute Idee, die nur schlecht ausgeführt wurde
+q0016_0004;q0016_0004;In Deutschland bestehen noch die alten Gegensätze zwischen der besitzenden und der arbeitenden Klasse
+q0016_0005;q0016_0005;Von der Globalisierung profitieren nur die mächtigen Wirtschaftsinteressen
+q0016_0006;q0016_0006;Die internationalen Finanzmärkte sind Schuld an der weltweit wachsenden sozialen Ungleichheit
+q0016_0007;q0016_0007;Arbeitnehmerinteressen brauchen eine starke Organisation
+q0016_0008;q0016_0008;Europa ist durch die vielen Ausländer in einem gefährlichen Maße überfremdet
+q0016_0009;q0016_0009;Wer als Ausländer in Deutschland bleiben will, muss die deutsche Kultur übernehmen
+q0016_0010;q0016_0010;Wir sollten endlich wieder Mut zu einem starken Nationalgefühl haben
+q0016_0011;q0016_0011;Was unser Land heute braucht, ist ein hartes und energisches Durchsetzen deutscher Interessen gegenüber dem Ausland
+q0016_0012;q0016_0012;Andere Völker haben in ihrer Geschichte mindestens genauso viel Schuld auf sich geladen wie die Deutschen in der Nazi-Zeit
+q0016_0013;q0016_0013;Der Standort Deutschland muss vor der Konkurrenz durch billige Arbeitskräfte aus dem Ausland geschützt werden
+q0016_0014;q0016_0014;Was Deutschland jetzt braucht, ist eine einzige starke Partei, die die Volksgemeinschaft insgesamt verkörpert
+q0016_0015;q0016_0015;Die Politiker kümmern sich darum, was einfache Leute denken
+q0016_0016;q0016_0016;Die Politiker bemühen sich um einen engen Kontakt zur Bevölkerung
+q0017_0001;q0017_0001;Weniger staatliche Regulierung der Wirtschaft
+q0017_0002;q0017_0002;Mehr direkte Demokratie
+q0017_0003;q0017_0003;Ausbau der sozialen Sicherungssysteme
+q0017_0004;q0017_0004;Mehr Sicherheit und Ordnung
+q0017_0005;q0017_0005;Mehr politische Stabilität und Kontinuität
+q0017_0006;q0017_0006;Mehr soziale Gleichheit
+q0017_0007;q0017_0007;Mehr Umweltschutz
+q0017_0008;q0017_0008;Mehr Flexibilität auf dem Arbeitsmarkt
+q0017_0009;q0017_0009;Mehr Gleichberechtigung der Geschlechter
+q0017_0010;q0017_0010;Stärkere Förderung der Leistungsträger
+q0017_0011;q0017_0011;Mehr Vaterlandsliebe
+q0017_0012;q0017_0012;Beseitigung der Armut
+q0018_0001;q0018_0001;CDU
+q0018_0002;q0018_0002;CSU
+q0018_0003;q0018_0003;SPD
+q0018_0004;q0018_0004;FDP
+q0018_0005;q0018_0005;Bündnis 90/Die Grünen
+q0018_0006;q0018_0006;AfD
+q0018_0007;q0018_0007;Die Linke
+q0018_0008;q0018_0008;Piratenpartei
+q0018_0009;q0018_0009;NPD
+q0018_other;q0018_other;Sonstiges (bitte angeben)
+q0019;q0019;Wenn am nächsten Sonntag Bundestagswahlen wären, welche Partei würden Sie wählen? Nur eine Antwort ist möglich.
+q0019_other;q0019_other;Sonstiges (bitte angeben)
+q0020_0001;q0020_0001;...wie viele Politiker sind ehrlich zu den Wählern?
+q0020_0002;q0020_0002;...wie viele Politiker sind in der Politik, um möglichst viel für sich selbst herauszuholen?
+q0021_0001;q0021_0001;Egal, was manche Leute sagen: Die Situation der einfachen Leute wird nicht besser, sondern schlechter
+q0021_0002;q0021_0002;So wie die Zukunft aussieht, kann man es kaum noch verantworten, Kinder auf die Welt zu bringen
+q0021_0003;q0021_0003;Die meisten Politiker interessieren sich in Wirklichkeit gar nicht für die Probleme der einfachen Leute
+q0021_0004;q0021_0004;Die meisten Leute kümmern sich in Wirklichkeit gar nicht darum, was mit ihren Mitmenschen geschieht
+q0022;q0022;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0023;q0023;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0024;q0024;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0025;q0025;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0026;q0026;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0027;q0027;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0028;q0028;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0029;q0029;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0030;q0030;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0031;q0031;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0032;q0032;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0033;q0033;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0034;q0034;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0035;q0035;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0036;q0036;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0037;q0037;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0038;q0038;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0039;q0039;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0040;q0040;Inwiefern entspricht dieser Kommentar ihren persönlichen Einstellungen? (Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0041;q0041;Was schätzen Sie: Wie groß ist der Anteil Ihrer Freunde, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0042;q0042;Was schätzen Sie: Wie groß ist der Anteil der Bevölkerung, der die in diesem Kommentar geäußerte Meinung teilt?(Bitte geben Sie Ihre Antwort schätzungsweise in % ein)
+q0043_0001;q0043_0001;
+q0044_0001;q0044_0001;
+q0045;q0045;"Wissen Sie, was man unter dem Begriff ""Filterblase"" versteht?"
+q0046;q0046;Sie haben angegeben, dass Sie das Phänomen der Filterblase kennen, tun Sie etwas dagegen?
+q0047;q0047;Was tun Sie gegen die Filterblase?
+q0048;q0048;Abschließend haben Sie die Möglichkeit, Ihre Fragen oder Anmerkungen zu dieser Befragung zu äußern (Optional).
+p0001;p0001;Page 1
+p0002;p0002;Page 2
+p0003;p0003;Page 3
+p0004;p0004;Page 4
+p0005;p0005;Page 5
+p0006;p0006;Page 6
+p0007;p0007;Page 7
+p0008;p0008;Page 8
+p0009;p0009;Page 9
+p0010;p0010;Page 10
+p0011;p0011;Page 11
+p0012;p0012;Page 12
+p0013;p0013;Page 13
