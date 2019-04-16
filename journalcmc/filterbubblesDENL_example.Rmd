@@ -1,0 +1,206 @@
+---
+title             : "The title"
+shorttitle        : "Title"
+
+author: 
+  - name          : "First Author"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "my@email.com"
+  - name          : "Ernst-August Doelle"
+    affiliation   : "1,2"
+
+affiliation:
+  - id            : "1"
+    institution   : "Wilhelm-Wundt-University"
+  - id            : "2"
+    institution   : "Konstanz Business School"
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: |
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib", "references.bib"]
+
+floatsintext      : yes
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r setup, include = FALSE}
+library("papaja")
+library(tidyverse)
+library(haven)
+library(sjlabelled)
+
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+
+```{r data-loading, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+rawDE <- read_sav("data/Political Opinions and Attitudes.sav")
+rawNL <- read_sav("data/Politieke Mening.sav")
+
+variable_names_DE <- names(rawDE) 
+variable_labels_DE <- get_label(rawDE)
+
+de_codebook <- data.frame(oldvar = variable_names_DE,
+                         # newvar = variable_names_DE,
+                        #  description = variable_labels_DE)
+
+
+write_csv2(de_codebook, "codebookDE.csv")
+de_codebook<- read_csv2("codebookDe.csv")
+
+data_de <- rawDE 
+
+names(data_de) <- de_codebook$newvar
+
+data_de$b5_n1
+
+sjPlot::plot_likert(data_de$b5_o1)
+
+as_factor(data_de, contains("b5_"))
+
+
+
+data_de$b5_n1 <- sjlabelled::as_factor(data_de$b5_n2)
+data_de %>% 
+  ggplot() +
+ aes(b5_n1) + geom_bar()
+
+```
+
+
+# Experimental Section for us
+
+
+```{r example-plot, fig.height=3, fig.width=3, fig.cap="A Scatterplot"}
+df <- data.frame(d=rnorm(100),e = rnorm(100))
+df %>% 
+ ggplot() +
+  aes(d,e) +
+  geom_point() +
+  labs(title="Nothing to see here", subtitle="Scatterplot of d over e", x="Variable d", y="Variable E")+
+  theme_apa()
+```
+Pariser [-@pariser2011filter] found
+An author found [@pariser2011filter] found
+
+See also Fig.\ \@ref(fig:example-plot)
+
+
+
+This is an equation $p<.01$
+\[ p <.05
+\]
+
+
+```{r data analysis}
+#df %>% t.test() -> model_ttest
+```
+
+There was no difference between 0 and our random data (`r apastats::describe.ttest(model_ttest)`).
+
+
+
+```{r}
+apaTables::apa.cor.table(attitude, filename = "table1.doc", table.number = 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Introduction
+
+
+We want to find out whether user diversity factors influence the users' awareness of the so-called filter bubble regarding political opinion formation. Additionally, we want to find out whether this differed between the Netherlands and Germany. As user diversity factors we will measure the following variables: Big 5 personality inventory (five variables), demographic features (three variables), facebook use (four variables), diversity of media use (six variables), political interest (two variables), political opinion (two variables).
+# Related Work
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+
+We will measure the awareness of filter bubbles using two criteria. For the first criterion we measure two initial variables: The first variable measure the agreement with seven political opinions on a scale from 0 to 100%, the second variable measure the perceived agreement of the nations‘ population with the same seven political opinions. The political opinions were presented as mock facebook posts and were polarizing in their content. For each of these variables we calculate the value as the mean from the eight measurements.  We use the mean difference between individual and perceived national agreement with our statements as the first criterion for the awareness of the filter bubble regarding political opinion formation. The second criterion is measured as the dichotomous decision of the participants whether they know the phenomenon. 
+
+
+
+
+
+
+## Participants
+
+## Material
+
+## Procedure
+Participants from Germany received a german questionnaire, while participants from the Netherlands received a dutch questionnaire. Both questionnaires contained the same questions with the exception of an additional political opinion in the dutch version. National references (e.g., "the german goverment...") were adapted to the questionnaire version (e.g., "the dutch government..."). Furthermore, when asked about political parties or levels of education the national equivalents were used. 
+## Data analysis
+We used `r cite_r("r-references.bib")` for all our analyses.
+We use correlation analysis, analysis of variance and multiple linear regressions to determine the influence of user diversity on user behavior and the awareness of filterbubbles.
+
+# Results
+
+# Discussion
+
+
+\newpage
+
+# References
+```{r create_r-references}
+r_refs(file = "r-references.bib")
+```
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id = "refs"></div>
+\endgroup

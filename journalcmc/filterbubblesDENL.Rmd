@@ -3,19 +3,21 @@ title             : "The title"
 shorttitle        : "Title"
 
 author: 
-  - name          : "First Author"
+  - name          : "Laura Burbach"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
     address       : "Postal address"
-    email         : "my@email.com"
-  - name          : "Ernst-August Doelle"
-    affiliation   : "1,2"
+    email         : "burbach@comm.rwth-aachen.de"
+  - name          : "Lisanne Simons"
+    affiliation   : "1"
+  - name          : "Martina Ziefle"
+    affiliation   : "1"
+  - name          : "André Calero Valdez"
+    affiliation   : "1"
 
 affiliation:
   - id            : "1"
-    institution   : "Wilhelm-Wundt-University"
-  - id            : "2"
-    institution   : "Konstanz Business School"
+    institution   : "Human-Computer Interaction Center (HCIC), RWTH Aachen University, Germany"
 
 authornote: |
   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
@@ -72,108 +74,84 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 
-```{r data-loading, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-
-rawDE <- read_sav("data/Political Opinions and Attitudes.sav")
-rawNL <- read_sav("data/Politieke Mening.sav")
-
-variable_names_DE <- names(rawDE) 
-variable_labels_DE <- get_label(rawDE)
-
-de_codebook <- data.frame(oldvar = variable_names_DE,
-                          newvar = variable_names_DE,
-                          description = variable_labels_DE)
-
-
-#write_csv2(de_codebook, "codebookDE.csv")
-de_codebook<- read_csv2("codebookDe.csv")
-
-data_de <- rawDE 
-
-names(data_de) <- de_codebook$newvar
-
-data_de$b5_n1
-
-sjPlot::plot_likert(data_de$b5_o1)
-
-as_factor(data_de, contains("b5_"))
-
-
-
-data_de$b5_n1 <- sjlabelled::as_factor(data_de$b5_n2)
-data_de %>% 
-  ggplot() +
-  aes(b5_n1) + geom_bar()
-
-```
-
-
-# Experimental Section for us
-
-
-```{r example-plot, fig.height=3, fig.width=3, fig.cap="A Scatterplot"}
-df <- data.frame(d=rnorm(100),e = rnorm(100))
-df %>% 
-  ggplot() +
-  aes(d,e) +
-  geom_point() +
-  labs(title="Nothing to see here", subtitle="Scatterplot of d over e", x="Variable d", y="Variable E")+
-  theme_apa()
-```
-Pariser [-@pariser2011filter] found
-An author found [@pariser2011filter] found
-
-See also Fig.\ \@ref(fig:example-plot)
-
-
-
-This is an equation $p<.01$
-\[ p <.05
-\]
-
-
-```{r data analysis}
-df %>% t.test() -> model_ttest
-```
-
-There was no difference between 0 and our random data (`r apastats::describe.ttest(model_ttest)`).
-
-
-
-```{r}
-apaTables::apa.cor.table(attitude, filename = "table1.doc", table.number = 1)
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Introduction
+As many authors have noted before, the Internet has changed the way in which media is produced and perceived [e.g., @flaxman2016; @trilling2016]. It has made the production of media easier, cheaper, and more dynamic and as a result more media is available. Mechanisms like search engines enable us to easily find the media we are looking for, wherever we are and whatever we are doing, thereby lifting the restriction on the amount of media we are able to acquire. In addition, mainly because of social networking sites, we are no longer merely the consumers of media, but we can be the producers as well. Social networking sites like Facebook and Twitter allow users to like, share, and comment on the media they perceive and thus directly reveal their opinion to their online network.  
+For a long time, scholars have been discussing whether these possibilities the Internet provides are a good thing [e.g., @vanalstyne1996; @williams2007]. Politics thereby seems to be a recurring theme [e.g., @garrett2009; @colleoni2014]. Regarding politics, the fear exists that the large amount of available media on the Internet might cause users to mainly consume media that contains the political views they already agree with. When taken to the extreme, users could then become oblivious to other perspectives which could divide the population in several groups supporting different extreme political opinions. In political science this is referred to using terms like polarization, fragmentation, segregation, and even extremism. When this were to happen, this could threaten the existence of healthy democracies [e.g., @hara2015].  
+Terms that are often mentioned when discussing these undesirable consequences of the Internet on politics are *echo chambers* and *filter bubbles* [@pariser2011; @sunstein2017]. Echo chambers thereby refer to the chambers citizens lock themselves in when choosing to mainly consume media that contains the political views they support. In these chambers they are surrounded by like-minded others and the lack of contradicting opinions convinces them more of their own [@sunstein2017, 1--12]. Filter bubbles on the other hand are not entered by choice. They are a result of the many filtering algorithms that are active online to help us find the media we like or are looking for. Since these filtering algorithms are often personalized, over the long haul there is a risk of people only seeing media that coincides with their already existing beliefs. As Pariser [-@pariser2011, 9--10] puts it, people then end up in "unique universes of information" in which different people receive different truths. He calls these universes *filter bubbles*.  
+Although in the end, both phenomena limit the diversity of the users' received information, thereby possibly having consequences like political polarization, filter bubbles might be more threatening because users are not necessarily aware of the fact that the media they receive is being filtered. Even though many scholars have suggested that users are unaware of the filtering algorithms [e.g., @cozza2016; @zuiderveen2016], only few have actually tested this assumption [e.g., @epstein2015, @eslami2015]. Furthermore, we are not aware of any studies specifically testing what user aspects cause people to be (un)aware of filter bubbles. However, since the awareness of filter bubbles will most likely eliminate the possible political consequences, we believe that it is important to know what user aspects make people (un)aware of filter bubbles. This information can then be used to expand the awareness of filter bubbles and prevent the phenomenon from negatively influencing our democracies. The present work will therefore provide first insights into answering the question: 
+
+> *RQ*: How does user diversity influence the awareness of filter bubbles regarding political opinion formation?  
+
+The research question was addressed using a questionnaire that was distributed in the Netherlands and measured the awareness using two criteria: the likelihood of being subjected to a filter bubble and the familiarity with the term. In the next chapter we will further explain the underlying problems regarding filter bubbles and introduce our hypotheses. We will then move on to part two of the present work in which we will describe the study we conducted and answer the research question based on our findings. 
 
 
-We want to find out whether user diversity factors influence the users' awareness of the so-called filter bubble regarding political opinion formation. Additionally, we want to find out whether this differed between the Netherlands and Germany. As user diversity factors we will measure the following variables: Big 5 personality inventory (five variables), demographic features (three variables), facebook use (four variables), diversity of media use (six variables), political interest (two variables), political opinion (two variables).
 # Related Work
+As mentioned in the introduction, one of the underlying problems with filter bubbles and echo chambers is that they might harm democracies. So, before we elaborate on these phenomena, we are going to take a closer look at democracies. There are many different interpretations of what a democracy is and these cause different explanations of why and whether they could be harmed by filter bubbles and echo chambers [@moller2018]. However, we found that an often recurring interpretation in papers on filter bubbles and echo chambers is the deliberative democracy [@bozdag2015; @kahne2012; @fletcher2017; @helberger2018; @karlsen2017; @hara2015]. The definition of deliberative democracies comes down to the following: healthy democracies rely on political conversation between people who are well-informed on the different political opinions. Only then can a person confidently form a considered opinion of his/her own. Based on this definition of democracies, some argue that democracies could benefit from the Internet, because the large amount of available information increases the chance of encountering different political opinions. Moreover, the Internet also provides a new and more accessible place for political discussion [@brundidge2010; @messing2014]. However, the Internet could also be found not to expand, but to limit, the different opinions people encounter, and mainly promote discussion between people with similar beliefs. If this were to happen, the described democratic values would not be met. This could then increase polarization, fragmentation, segregation, or extremism, which would all result in the formation of strongly opposing political groups [@sunstein2017, 1--12]. Just as a part of the possible positive influence of the Internet, these worries arise from the fact that the Internet has resulted in a larger amount of available media than ever before.  
+
+## An abundance of information 
+As Sunstein [-@sunstein2017, 63--64] puts it: "There is an omnipresent risk of too many options, too many topics, and too many opinions." Since it is not possible to consume everything, choices have to be made. When making these choices themselves, consumers theoretically tend to choose media that aligns with, and avoid media that contradicts, their already existing beliefs. Scholars often refer to this principle using the term *selective exposure* [e.g., @beam2014; @dubois2018; @colleoni2014; @garrett2009; @karlsen2017; @kobayashi2009; @stroud2008; @trilling2016; @yom2014]. This phenomenon is then again frequently explained using the cognitive dissonance theory by @festinger1957 [e.g., @beam2014; @colleoni2014; @dubois2018; @garrett2009; @karlsen2017; @trilling2016]. The theory explains that people experience it positively when they are confronted with information that coincides with their beliefs. Contrarily, when confronting people with information that contradicts their beliefs, they experience this negatively. People would therefore favor opinion-confirming media over opinion-contradicting media.  
+In his book, [@sunstein2017, 1--12 & 63--68] explains how these choices might lock people in echo chambers where they are surrounded by like-minded others and discussion primarily happens within these chambers. As a result, people will become more convinced of their own opinion. Mutual understanding could then decrease to a point, where normal discussion with opposing others is not meaningful, or even possible, anymore. This process is sometimes also referred to using the term *cyberbalkanization* [@vanalstyne1996].  
+Although echo chambers can be reinforced by the possibilities of the Internet, to a certain extent this kind of balkanization also happens offline, e.g., when people choose to buy newspapers known to support certain views [@garrett2009; @stroud2008; @sunstein2017]. However, the concerns are not limited to the choices users actively make, but also include the choices filtering algorithms make on their behalf. 
+
+## Filtering alogrithms
+Filtering algorithms have been developed to help us deal with the abundance of available information on the Internet [@pariser2011, 10--12]. At this moment, the scope of the websites that make use of such filtering algorithms is broad, but well-known examples are Google's search engine and the social networking site Facebook [e.g., @hannak2013; @bakshy2015]. The success of a filtering algorithm is measured in consumer satisfaction. Since the amount of media is no problem, it is likely that consumer satisfaction is determined by how well the content that is shown corresponds to what a consumer is interested in or looking for. Filtering algorithms are therefore often personalized [e.g., @koene2015]. There are many different personalization techniques. Frequently used examples are content-based personalizing, which uses the media uploaded by users to figure out what they like to see, and collaborative filtering which uses the preferences of people who show similar interests to make predictions about what a person might like [@bellogin2013; @koene2015]. Moreover, multiple techniques are often combined, and researchers have even started experimenting with using machine learning in personalization algorithms [@portugal2017]. All in all, developers are striving to make personalization algorithms better and more accurate.  
+However, the goal of these personalization algorithms is also seen as their negative consequence: people are receiving different information altered to suit them. They therefore end up in filter bubbles, and get used to different truths about the world we live in. @pariser2011 [9--10] mentions several aspects of filter bubbles that differ from echo chambers and possibly make them more threatening. First, people are alone in their filter bubble since the filtering algorithms individualize them for all users. Secondly, filter bubbles are invisible, people do usually not see what decisions personalization algorithms make for them. Finally, people do not choose to enter a filter bubble. Whereas they might, as previously mentioned, choose to read a newspaper with a strong political leaning, and are thus likely to be aware of the bias of such a newspaper, getting trapped in a filter bubble just happens without being notified. In addition, the studies that have thus far looked into methods to burst the filter bubble, also highlight the fear of the consequences of filter bubbles as personalization algorithms get better [@bozdag2015; @helberger2018; @nagulendra2016; @yom2014].
+
+## Are we in danger at the moment?
+Even though the theoretical negative influences of the Internet have often been discussed, scholars do not seem particularly convinced that these are happening at this moment. Many did find some evidence of selective exposure happening, but they often also found that people still perceive counter-attitudinal opinions [@bright2018; @flaxman2016; @garrett2009; @kobayashi2009]. Specifically on the effect of selective exposure on politics, like the increase in polarization and fragmentation, several empirical studies did not succeed in finding a strong influence [@beam2018; @fletcher2017]. The same conclusion was drawn by [@trilling2016], who studied the effect of selective exposure on polarization in the Netherlands.  
+@dubois2018 drew another interesting conclusion. They argued that even if people are found to perceive limited media diversity on a single platform, we should keep in mind that they might still receive other information on different platforms. This thus limits the impact of the results of single platform studies, as many studies on the topics are [@chan2017; @boutyline2017].
+
+## Do Filter bubbles exist?
+The above mentioned studies however, mainly focus on self chosen selective exposure. Though @dandekar2013 mathematically proved that certain types of filtering algorithms could lead to polarization, there is a lack of empirical studies that focus on the effect of filter bubbles caused by these filtering algorithms [@zuiderveen2016.] A reason for this could be that there is unclarity about the extent to which personalization is happening at the moment, and thus, how likely it is that people are trapped in filter bubbles.  
+A study by @bakshy2015 found that Facebook filters out a small amount of cross-cutting content in the United States. However, they also found that whether individuals actually consume diverse views depends more on their individual choices. These choices include the composition of the participants' Facebook friends and the direct choice to read cross-cutting content if it shows up.  
+@hannak2013 also aimed to measure the degree of personalization on the Internet, but in their case they studied search engines. They found that different types of search engines exert different levels of personalization. For Google, 11.7% of the shown results were found to be personalized, and for Bing, 15.8%. They also found that the extent to which users are subjected to personalization, mainly depended on whether users were logged in to an account, and the users' IP address. If the latter indeed influences personalization, this explains why @hoang2015 made a contradicting finding. They did not find marked levels of personalization for Google, but used a single IP address during their experiments.  
+When looking at the Netherlands, a recent study by @moller2018 found that personalized algorithmic recommendations did not decrease the diversity of the recommended media compared to non-personalized algorithmic recommendations. However, the study was conducted using articles from a single Dutch newspaper which holds articles with a political orientation towards the center. This makes the used articles less likely to hold political views of strongly opposing sides. The authors therefore also recognize that the study should be replicated with a more diverse, and thus realistic, pool of news. At this moment, the study does therefore not paint a picture of the impact of personalization algorithms as a whole, as the used articles do not correspond to the different opinions that can be found online.  
+Irrespective of these findings, other studies have shown that algorithms that accurately predict user characteristics, like political orientation, do exist [@azucar2018; @efron2006; @kosinski2013]. The present lack of strong empirical evidence on the influence of filter bubbles does therefore not mean that we can completely discard the threat they might pose. Filtering algorithms might first start to show consequences as they get better in the future [@zuiderveen2016]. 
+
+## Filter bubble awareness
+If users are unaware of filtering algorithms---as they are often assumed to be---this unawareness is a key point in what could make these algorithms dangerous for politics as their influence increases [e.g., @hoang2015; @introna2000]. When people are aware that they receive different political truths than others, filter bubbles might not negatively affect their political opinion formation, and thus not lead to consequences like polarization. However, the few studies that tested if people are aware of the work of filtering algorithms on particular platforms, found that most participants were indeed not [@epstein2015; @eslami2015; @hamilton2014]. Moreover, of these studies, only one specifically dug into what user characteristics influence the awareness of filter bubbles, but this study was limited to Facebook and did not concentrate on the possible dangers for politics [@eslami2015].  
+However, in the light of the possibility to use the awareness of filter bubbles regarding political opinion formation to prevent their political consequences, we believe that it is important to know what user characteristics influence this awareness. The resulting information will then provide a starting point for tackling the problem. Because of failing literature on the awareness of filter bubbles regarding political opinion formation, we used literature on echo chambers, filtering algorithms, and politics, to get an idea of what user characteristics could be influencing the awareness of filter bubbles. In the next section we described the hypotheses this resulted in. In the remainder of this work, the term *filter bubbles* refers to filter bubbles regarding political opinion formation.
+
+## Hypotheses
+### political interest and media diversity
+In the aforementioned paper by @dubois2018, the focus is on self-entered echo chambers and not on filter bubbles. However, in a way, their findings are transferable to the awareness of filter bubbles. They found that the likelihood of being in an echo chamber decreases if a person is more interested in politics and has a more diverse media diet. Even though online media might be becoming more important, there are still many other ways to access media without the risk of personalization [@vanaelst2017]. @dubois2018 argue that people who are more interested in politics, generally feel a need to be well informed. They are thus likely to check multiple media sources, which decreases the chance of being in an echo chamber. Since a person is only trapped in a filter bubble if he or she is oblivious to other political perspectives, political interest and media diversity could influence how aware people are of filter bubbles as well. We will be looking at political interest and diverse media use separately.  
+We first argue that people with a greater political interest are likely to be better informed on political matters and might actively use diverse political media. On the one hand, when using more diverse media online, the filtering algorithms might notice the users' diverse political interests, and therefore show more diverse content. On the other hand, politically interested people might also use more offline media sources. These are not personalized, and thus provide more diverse perspectives. If in that case online content would be strongly filtered, politically interested people might still be aware of other opinions and notice this filtering. Consequently, they might interpret the filtered media differently, making it less likely that they accept the received content as the absolute truth. For that reason, they would then be aware of the filter bubble.  
+Another perspective on why political interest could influence the awareness of filter bubbles, derives from the study by [@bode2017]. In a practical experiment using corneal eye tracking software, they found that less politically interested people tend to skip over political content on social media faster. We therefore argue that when less politically interested people ignore political content online more often, filtering algorithms might not have enough information to be able to directly filter on their political preferences. These algorithms might then have difficulties with putting them in filter bubbles.
+While testing for the influence of political interest on the awareness of filter bubbles on the basis of the above mentioned arguments, we considered internal political efficacy as a part of political interest. Internal political efficacy refers to the extent to which a participant beliefs he or she can understand politics, and thus effectively participate [@kenski2006]. We decided to see internal political efficacy as a part of political interest because it has been found that the two are related [@kenski2006]. Altogether, this brings us to our first hypothesis:
+
+> $H_{1}$: **Political interest** influences the awareness of filter bubbles regarding political opinion formation.  
+
+As aforementioned, the more diverse knowledge on political matters that politically interested people might have, could be caused by a more diverse media diet [@dubois2018]. Because more diverse media use increases the chance of encountering more diverse opinions, politically less interested people could also be influenced by diverse media use. If media on single platforms would then be limited to certain perspectives, i.a., because of it being personalized, the media encountered on other platforms could result in awareness of filter bubbles. Especially interesting thereby is non-digital media consumption. Even though these types of media, like newspapers and television, are restricted by the producers' choices, they are not subjected to personalization. Conventional media is thus not altered to suit the individual preferences of users, but is the same for everyone. When testing the following hypothesis, we will therefore also take into account the diversity of digital media use compared to conventional media use:  
+
+> $H_{2}$: Regular **diverse media use** influences the awareness of filter bubbles regarding political opinion formation. 
+
+### Facebook
+The social networking site Facebook is a much discussed online platform when talking about the effect of filtering algorithms and the existence of filter bubbles [e.g., @bakshy2015; @beam2018; @chan2017; @eslami2015; @pariser2011; @sunstein2017}. It is no secret that Facebook uses personalization algorithms. Facebook's employees have publicly declared that the company aims to personalize Facebook feed to show what is relevant to individual users [@sunstein2017, 14--16]. Facebook's News Feed ranking algorithm thereby takes into account several aspects: It looks at a user's friends, assuming that the more a user seems to interact with someone on the platform, the more of his/her posts the user wishes to see; It takes the time a user spends looking at a post into account, because this might reveal what the user is interested in; And finally, it considers what posts a user likes and seems to click on. The more likes a user thereby makes, the more accurate the personalization will be [e.g., @kosinski2013; @pariser2011, 35--41; @sunstein2017, 122--126].  
+In addition, a market research that was performed in January 2018, showed that Facebook has been the most popular social networking site in the Netherlands since 2012 [@veer2018]. It also showed that more than 75% of the Dutch population of 15 years and older uses Facebook. Altogether, this makes Facebook a likely platform on which Dutch citizens could be subjected to filter bubbles.  
+So, despite the argument that the problem of filter bubbles cannot realistically be addressed on a single platform, the likelihood of Dutch citizens being trapped in a filter bubble on Facebook may still influence the awareness. Being aware of filter bubbles because of Facebook use could be related to noticing that the diversity of political opinions shown on Facebook is limited.  
+As aforementioned, @eslami2015 conducted a study on whether users are specifically aware of the filtering Facebook does. During initial interviews they discovered that most of their participants (62.5%) did not know that their News Feed is being filtered. A series of aspects thereby influenced the users' awareness. Of these aspects we decided to look at the following three: Firstly, the awareness was found to be influenced by the amount of Facebook friends. The more Facebook friends a user has, the more friends the algorithm potentially filters out. Users might notice that a large amount of their Facebook friends never or barely show up in their News Feed, thus increasing the awareness of the filtering. Another influencing factor @eslami2015 found was usage frequency. Frequent users provide Facebook with more information about themselves, thus increasing the likelihood of strong filtering. The same argument can be applied to the activeness of Facebook use, which is the last aspect we will be looking at. Although the time spent looking at a post already provides the algorithm with information [@sunstein2017, 14--16], more information can be retrieved when actually using Facebook in a way that is visible to someone's Facebook friends, e.g., by sharing a post. More active use might result in more filtering.  
+After testing if having a Facebook account influences the awareness of filter bubbles, we will therefore be looking at these aspects---*friends*, *frequency*, *activeness*---when testing the following hypothesis:  
+
+> $H_{3}$: The way in which **Facebook** is used influences the awareness of filter bubbles regarding political opinion formation.
+
+### political opinion
+Studies in the United States have revealed differences in how much opinion-contradicting media users with different political leanings receive [@bakshy2015; @vraga2016]. Even though this might also be caused by self-chosen selective exposure, @sunstein2017 [122--126] mentions that a study by Facebook's own employees showed that for liberals 8% of cross-cutting content is suppressed, and for conservatives 5% [@bakshy2015; @colleoni2014; @vraga2016]. Since algorithms have been able to predict political opinion for quite a while now, this could be happening at other platforms too [@efron2006; @kosinski2013]. We thereby recognize that the mentioned studies were conducted in the United States, where they have a two-party political system. Even though the Netherlands has a multi-party political system, to a certain extent a divide between left- and right-wing political opinion can be made there as well. We therefore think that algorithmic filtering might also influence the amount of opinion-contradicting media Dutch users perceive.  
+Creating awareness on platforms that are to be found to personalize on political leaning could prevent political consequences. As a first step, it is therefore important to know if the awareness of filter bubbles is affected by political opinion. In the remainder of this work we see political opinion as how strongly left- or right-wing a participant's political views are, and we will test if political opinion has an influence using the following hypothesis:  
+
+> $H_{4}$: **Political opinion** influences the awareness of filter bubbles regarding political opinion formation.
+
+### demographic features and personality
+Finally, we also looked at some more typical aspects of user diversity. As aforementioned, algorithms can reliably predict many user characteristics, amongst others age, gender, and intelligence [@kosinski2013]. In addition, political interest and participation have been found to be influenced by, i.a., age, gender and level of education [@deligiaouri2015; @kahne2012; @hillygus2005; @vromen2016; @zhang2009]. The combination of both might cause differences in the extent to which media is being filtered, and the likelihood that a user notices this filtering. We tested the influence of these more typical user characteristics---*gender*, *age* and *level of education*---with the following hypothesis:  
+
+> $H_{5}$: **Demographic features** influence the awareness of filter bubbles regarding political opinion formation. 
+
+Finally we tested the influence of personality. Personality might for example influence how credulous or considerate people are, and therefore how likely they are to accept media they encounter as the truth. This could then result in different levels of awareness of filter bubbles depending on different personality traits. There are many models that aim to describe personality, but we chose the Big Five personality traits to do so because this is a well-accepted model. The model contains five factors that together describe a person's personality: openness to experience, conscientiousness, extroversion, agreeableness and neuroticism [@mccrae1992].  
+Multiple studies have found that these personality traits also influence how people use social media, therefore making it more likely that they influence algorithmic filtering [mentioned by @azucar2018]. Social media use has thereby been found to be influenced by extroversion, neuroticism and openness to experience, though this also depends on age and gender [e.g., @correa2010]. Specifically regarding politics, the Big Five personality traits also influence political behavior and (online) political activity [@deligiaouri2015; @mondak2008]. [@mondak2008] thereby concluded that especially high levels of openness to experience increase the extent to which people expose themselves to political information. These people typically have a greater political knowledge, which might make them less likely to be subjected to, or unaware of, filter bubbles.  
+Personality traits as such, and their influence on social media use and political activity/behavior, might thus influence the awareness of filter bubbles. High levels of certain personality traits could increase the likelihood of being trapped in a filter bubble, or, on the other hand, they could increase the chance of recognizing filter bubbles. The final hypothesis therefore reads:  
+
+> $H_{6}$: The **Big Five** personality traits influence the awareness of filter bubbles regarding political opinion formation. 
 
 # Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
-
-
-We will measure the awareness of filter bubbles using two criteria. For the first criterion we measure two initial variables: The first variable measure the agreement with seven political opinions on a scale from 0 to 100%, the second variable measure the perceived agreement of the nations‘ population with the same seven political opinions. The political opinions were presented as mock facebook posts and were polarizing in their content. For each of these variables we calculate the value as the mean from the eight measurements.  We use the mean difference between individual and perceived national agreement with our statements as the first criterion for the awareness of the filter bubble regarding political opinion formation. The second criterion is measured as the dichotomous decision of the participants whether they know the phenomenon. 
-
-
-
-
 
 
 ## Participants
@@ -181,10 +159,8 @@ We will measure the awareness of filter bubbles using two criteria. For the firs
 ## Material
 
 ## Procedure
-Participants from Germany received a german questionnaire, while participants from the Netherlands received a dutch questionnaire. Both questionnaires contained the same questions with the exception of an additional political opinion in the dutch version. National references (e.g., "the german goverment...") were adapted to the questionnaire version (e.g., "the dutch government..."). Furthermore, when asked about political parties or levels of education the national equivalents were used. 
+
 ## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
-We use correlation analysis, analysis of variance and multiple linear regressions to determine the influence of user diversity on user behavior and the awareness of filterbubbles.
 
 # Results
 
