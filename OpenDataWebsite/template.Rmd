@@ -1,0 +1,1131 @@
+---
+title: "Filterbubble Awareness"
+output: 
+  flexdashboard::flex_dashboard:
+    source_code: embed
+    orientation: rows
+    social: [ "menu" ]
+    vertical_layout: scroll
+    theme: bootstrap
+---
+
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(dygraphs)
+library(foreign)
+library(knitr)
+library(dplyr)
+library(ggpubr)
+```
+
+```{r import data, include = FALSE}
+dataset = read.spss("filterbubble.sav", to.data.frame=TRUE)
+
+```
+
+
+# Introduction {data-icon="fa-home"}
+
+In 2011, Eli Pariser published the book "The Filter Bubble - What the Internet Is Hiding from You" in which he introduced the concept of the filter bubble. He describes how perosanlized filtering algorithms will result in people only seeing media they want to see and that coincides with their already existing believes. As Pariser (2011, p. 9-10) puts it, people then end up in "unique universes of information" in which different people receive different truths. The study described on this web page deals with the users' awareness of these filterbubbles regarding political opinion formation and whether this differs depending on their country of origin. The following five countries were thereby taken into account:
+
+* Germany
+* The Netherlands
+* The United Kingdom
+* France
+* Poland
+
+# Method {data-orientation=columns}
+
+### Method Description
+
+Test ABS
+
+* A
+* B
+* C
+
+Links can be included as well
+[Google](http://www.google.com)
+
+Method Figures
+-----------
+
+
+### Method 1
+
+Aha
+```{r}
+p <- ggplot(cars) + aes(x = speed, y = dist) + geom_point()
+ggplotly(p)
+```
+
+### Method 2
+
+```{r}
+p <- ggplot(cars) + aes(x = speed, y = dist) + geom_point()
+ggplotly(p)
+```
+
+
+# Results
+
+Row 
+-------------------------------------
+### Sample Description
+The sample consisted of a total of 1238 respondents from 5 different countries. The distribution of the number of respondents per country can be found below:
+
+```{r 1.1}
+nationality           <- as.data.frame(table((dataset$nationality)))
+nationality["Perc"]   <- round(nationality$Freq / nrow(dataset) * 100, digits = 0)
+
+kable(nationality,
+      col.names = c("", "frequency", "percentage"), 
+      align = c("r", "c", "c"), 
+      caption = "Nationality distribution of completed questionnaires (N = 1238).")
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### gender 
+**Gender**
+
+### N = 1238 (Tab.)
+```{r 2.1, fig.width=5}
+gender            <- as.data.frame(table((dataset$gender)))
+gender["Perc"]    <- round(gender$Freq / nrow(dataset) * 100, digits = 0)
+
+kable(gender,
+      col.names = c("", "frequency", "percentage"), 
+      align = c("r", "c", "c"), 
+      caption = c("Gender distribution of complete dataset (N = 1238)."))
+```
+
+### N = 1238 (Fig.)
+```{r 2.2}
+ggplot(dataset) +
+  aes(x = gender) + 
+  geom_bar(position = "dodge", 
+           colour = "black", 
+           fill = c("#8ebae5","#00549f")) +
+  labs(title = "Gender distribution of complete dataset (N = 1238)", 
+        x = "gender", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (Tab.)
+```{r 2.3}
+df23 <- as.data.frame(table(dataset$nationality, dataset$gender))
+
+kable(#create dataframe
+        data.frame(
+              #labels
+                nationality["Var1"], 
+              #frequency male
+                c(df23[1:5, "Freq"]),
+              #percentage male
+                c((df23[1, "Freq"]/nationality[1, "Freq"])*100,
+                  (df23[2, "Freq"]/nationality[2, "Freq"])*100,
+                  (df23[3, "Freq"]/nationality[3, "Freq"])*100,
+                  (df23[4, "Freq"]/nationality[4, "Freq"])*100,
+                  (df23[5, "Freq"]/nationality[5, "Freq"])*100), 
+              #frequency female
+                c(df23[6:10, "Freq"]),
+              #percentage female
+                c((df23[6, "Freq"]/nationality[1, "Freq"])*100,
+                  (df23[7, "Freq"]/nationality[2, "Freq"])*100,
+                  (df23[8, "Freq"]/nationality[3, "Freq"])*100,
+                  (df23[9, "Freq"]/nationality[4, "Freq"])*100,
+                  (df23[10, "Freq"]/nationality[5, "Freq"])*100)
+          ),
+          
+          #format table
+            col.names = c("", "male frequency", "male percentage", "female frequency", "female percentage"), 
+            align = c("r", "c", "c", "c", "c"), 
+            caption = "Gender distribution divided by nationality.", 
+            digits = 0
+)
+
+```
+
+### nationalities (Fig.)
+```{r 2.4}
+ggplot(dataset) +
+  aes(x = nationality, 
+      fill = gender) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Gender distribution divided by nationality", 
+        x = "nationality", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### age
+**Age**  
+
+### N = 1238 (Tab.)
+
+```{r 3.1}
+kable(
+  #create dataframe
+    data.frame(
+      #minimum
+        c(round(min(dataset$age), digits = 0)),
+      #mean
+        c(round(mean(dataset$age), digits = 2)),
+      #maximum
+        c(round(max(dataset$age), digits = 0)),
+      #standard deviation
+        c(round(sd(dataset$age), digits = 2))
+    ),
+      
+  #format table      
+    col.names = c("minimum", "mean", "maximum", "standard deviation"),
+    align = c("c", "c", "c", "c"), 
+    caption = "Age distribution of complete dataset (N = 1238)"
+)
+```
+
+### N = 1238 (Fig.)
+
+```{r 3.2}
+ggplot(data=dataset, 
+       aes(dataset$age)) +
+  geom_histogram(binwidth = 1, 
+                 fill = "#8ebae5", 
+                 colour = "black") +
+  xlim(c(18,80)) +
+  theme_light() +
+  scale_fill_grey() +
+  labs(title = "Age distribution of complete dataset (N = 1238)", 
+        x = "age", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (Tab.)
+
+```{r 3.3}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #minimum
+        round(c(min(dataset$age[dataset$nationality=="Netherlands"]), 
+                min(dataset$age[dataset$nationality=="Germany"]),
+                min(dataset$age[dataset$nationality=="UK"]),
+                min(dataset$age[dataset$nationality=="France"]),
+                min(dataset$age[dataset$nationality=="Poland"])), 
+                digits = 0),
+      #mean
+        round(c(mean(dataset$age[dataset$nationality=="Netherlands"]), 
+                mean(dataset$age[dataset$nationality=="Germany"]),
+                mean(dataset$age[dataset$nationality=="UK"]),
+                mean(dataset$age[dataset$nationality=="France"]),
+                mean(dataset$age[dataset$nationality=="Poland"])),
+                digits = 2),
+      #maximum
+        round(c(max(dataset$age[dataset$nationality=="Netherlands"]), 
+                max(dataset$age[dataset$nationality=="Germany"]),
+                max(dataset$age[dataset$nationality=="UK"]),
+                max(dataset$age[dataset$nationality=="France"]),
+                max(dataset$age[dataset$nationality=="Poland"])),
+                digits = 0),
+      #standard deviation
+        round(c(sd(dataset$age[dataset$nationality=="Netherlands"]), 
+                sd(dataset$age[dataset$nationality=="Germany"]),
+                sd(dataset$age[dataset$nationality=="UK"]),
+                sd(dataset$age[dataset$nationality=="France"]),
+                sd(dataset$age[dataset$nationality=="Poland"])),
+                digits = 2)
+    ),
+      
+  #format table      
+    col.names = c("", "minimum", "mean", "maximum", "standard deviation"),
+    align = c("r", "c", "c", "c", "c"), 
+    caption = "Age distribution divided by nationality"
+)
+```
+
+### nationalities (Fig.)
+
+```{r 3.4}
+ggplot(dataset, 
+       aes(x = age)) + 
+  geom_histogram(binwidth=.5, 
+                 fill = "#8ebae5",
+                 colour = "black") +
+  facet_grid(nationality ~ .) + 
+  theme_light() +
+  scale_fill_grey() +
+  labs(title = "Age distribution divided by nationality", 
+        x = "age", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### education 
+**Education**  
+
+Since every country has its own educational system, the participants indicated their level of education by answering different questions specifically altered to fit their country's educational system. To be able to compare the level of education we divided the answers in "high" and "low" ecuation. For the sake of simplicity, we labeled everything below a university bachelor degree as a low level of education. 
+
+### N = 1238 (Tab.)
+
+```{r 4.1}
+education           <- as.data.frame(table((dataset$education)))
+education["Perc"]   <- round(education$Freq / nrow(dataset) * 100, digits = 0)
+
+kable(education,
+      col.names = c("", "frequency", "percentage"), 
+      align = c("r", "c", "c"), 
+      caption = c("Education distribution of complete dataset (N = 1238)."))
+```
+
+### N = 1238 (Fig.)
+
+```{r 4.2}
+ggplot(dataset) +
+  aes(x = education) + 
+  geom_bar(position = "dodge", 
+           colour = "black", 
+           fill = c("#8ebae5", "#00549f")) +
+  scale_fill_grey() + 
+  labs(title = "Education distribution of complete dataset (N = 1238)", 
+        x = "level of education", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (Tab.)
+```{r 4.3}
+df43 <- as.data.frame(table(dataset$nationality, dataset$education))
+
+kable(#create dataframe
+        data.frame(
+          #labels
+            nationality["Var1"],
+          #low frequency
+            c(df43[1:5, "Freq"]),
+          #low percentage
+            c((df43[1, "Freq"]/nationality[1, "Freq"])*100,
+              (df43[2, "Freq"]/nationality[2, "Freq"])*100,
+              (df43[3, "Freq"]/nationality[3, "Freq"])*100,
+              (df43[4, "Freq"]/nationality[4, "Freq"])*100,
+              (df43[5, "Freq"]/nationality[5, "Freq"])*100),
+          #high frequency
+            c(df43[6:10, "Freq"]),
+          #high percentage
+            c((df43[6, "Freq"]/nationality[1, "Freq"])*100,
+              (df43[7, "Freq"]/nationality[2, "Freq"])*100,
+              (df43[8, "Freq"]/nationality[3, "Freq"])*100,
+              (df43[9, "Freq"]/nationality[4, "Freq"])*100,
+              (df43[10, "Freq"]/nationality[5, "Freq"])*100)
+        ),
+      #format table
+        col.names = c("", "low education freq.", "low education perc.", "high education freq.", "high education perc."), 
+        align = c("r", "c", "c", "c", "c"), 
+        caption = "Education distribution divided by nationality.", 
+        digits = 0
+)
+```
+
+### nationalities (Fig.)
+```{r 4.4}
+ggplot(dataset) +
+  aes(x = nationality, fill = education) + 
+  geom_bar(position = "dodge", colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Education distribution divided by nationality", 
+        x = "nationality", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### awareness groups 
+**Awareness groups**  
+
+The influence of the awareness of filter bubbles was tested by building three awareness groups. We thereby saw the level of awareness of filter bubbles as a combination of the likelihood of being subjected to a filter bubble and knowing what the term means. The three awareness groups are therefore defined as follows:
+
+* Unaware:  
+The participants who were subjected to a filter bubble and not familiar with the term. They have no clue that they are trapped in a filter bubble nor that the phenomena exists, which makes them unaware of filter bubbles in general. 
+* Implicitly aware:  
+The participants who were either subjected to a filter bubble but familiar with the term, or not subjected to a filter bubble but not familiar with the term. Though these participants have some knowledge of the filter bubble, either by knowing the term or by not being subjected to it, their knowledge is not complete. They thus show partially aware behaviour. 
+* aware:  
+The participants who were not subjected to a filter bubble and familiar with the term. They know that a filter bubble exists and their behaviour shows they are also not subjected to one. Their knowledge of the phenomena might have influenced their behaviour. 
+
+### N = 1238 (Tab.)
+
+```{r 5.1}
+aware           <- as.data.frame(table((dataset$awareness)))
+aware["Perc"]   <- round(aware$Freq / nrow(dataset) * 100, digits = 0)
+
+kable(aware,
+      col.names = c("", "frequency", "percentage"), 
+      align = c("r", "c", "c"), 
+      caption = c("Awareness distribution of complete dataset (N = 1238)."))
+```
+
+### N = 1238 (Fig.)
+
+```{r 5.2}
+ggplot(dataset) +
+  aes(x = awareness) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_grey() + 
+  labs(title = "Awareness distribution of complete dataset (N = 1238)", 
+        x = "awareness groups", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (Tab.)
+```{r 5.3}
+df53 <- as.data.frame(table(dataset$nationality, dataset$awareness))
+
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #unaware frequency
+        c(df53[1:5, "Freq"]),
+      #unaware percentage
+        c((df53[1, "Freq"]/nationality[1, "Freq"])*100,
+          (df53[2, "Freq"]/nationality[2, "Freq"])*100,
+          (df53[3, "Freq"]/nationality[3, "Freq"])*100,
+          (df53[4, "Freq"]/nationality[4, "Freq"])*100,
+          (df53[5, "Freq"]/nationality[5, "Freq"])*100),
+      #implicitly aware frequency
+        c(df53[6:10, "Freq"]),
+      #implicitly aware percentage
+        c((df53[6, "Freq"]/nationality[1, "Freq"])*100,
+          (df53[7, "Freq"]/nationality[2, "Freq"])*100,
+          (df53[8, "Freq"]/nationality[3, "Freq"])*100,
+          (df53[9, "Freq"]/nationality[4, "Freq"])*100,
+          (df53[10, "Freq"]/nationality[5, "Freq"])*100),
+      #aware frequency
+        c(df53[11:15, "Freq"]),
+      #aware percentage
+        c((df53[11, "Freq"]/nationality[1, "Freq"])*100,
+          (df53[12, "Freq"]/nationality[2, "Freq"])*100,
+          (df53[13, "Freq"]/nationality[3, "Freq"])*100,
+          (df53[14, "Freq"]/nationality[4, "Freq"])*100,
+          (df53[15, "Freq"]/nationality[5, "Freq"])*100)
+    ),
+  #format table
+    col.names = c("", "unaware freq.", "unaware perc.", "implicitly aware freq.", "implicitly aware perc.", "aware freq.", "aware perc."), 
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Awareness distribution divided by nationality.", 
+    digits = 0
+)
+```
+
+### nationalities (Fig.)
+
+
+```{r 5.4}
+ggplot(dataset) +
+  aes(x = nationality, 
+      fill = awareness) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_grey() + 
+  labs(title = "Awareness distribution divided by nationality", 
+        x = "nationality", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### personality 
+**Personality**
+
+### nationalities (Tab.) 
+
+```{r 6.1}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #agreeableness mean
+        c(mean(dataset$agreeableness[dataset$nationality=="Netherlands"]),
+          mean(dataset$agreeableness[dataset$nationality=="Germany"]),
+          mean(dataset$agreeableness[dataset$nationality=="UK"]),
+          mean(dataset$agreeableness[dataset$nationality=="France"]),
+          mean(dataset$agreeableness[dataset$nationality=="Poland"])),
+      #agreeableness standard deviation
+        c(sd(dataset$agreeableness[dataset$nationality=="Netherlands"]),
+          sd(dataset$agreeableness[dataset$nationality=="Germany"]),
+          sd(dataset$agreeableness[dataset$nationality=="UK"]),
+          sd(dataset$agreeableness[dataset$nationality=="France"]),
+          sd(dataset$agreeableness[dataset$nationality=="Poland"])),
+      #conscientiousness mean
+        c(mean(dataset$conscientiousness[dataset$nationality=="Netherlands"]),
+          mean(dataset$conscientiousness[dataset$nationality=="Germany"]),
+          mean(dataset$conscientiousness[dataset$nationality=="UK"]),
+          mean(dataset$conscientiousness[dataset$nationality=="France"]),
+          mean(dataset$conscientiousness[dataset$nationality=="Poland"])),
+      #conscientiousness standard deviation
+        c(sd(dataset$conscientiousness[dataset$nationality=="Netherlands"]),
+          sd(dataset$conscientiousness[dataset$nationality=="Germany"]),
+          sd(dataset$conscientiousness[dataset$nationality=="UK"]),
+          sd(dataset$conscientiousness[dataset$nationality=="France"]),
+          sd(dataset$conscientiousness[dataset$nationality=="Poland"])),
+      #extraversion mean
+        c(mean(dataset$extraversion[dataset$nationality=="Netherlands"]),
+          mean(dataset$extraversion[dataset$nationality=="Germany"]),
+          mean(dataset$extraversion[dataset$nationality=="UK"]),
+          mean(dataset$extraversion[dataset$nationality=="France"]),
+          mean(dataset$extraversion[dataset$nationality=="Poland"])),
+      #extraversion standard deviation
+        c(sd(dataset$extraversion[dataset$nationality=="Netherlands"]),
+          sd(dataset$extraversion[dataset$nationality=="Germany"]),
+          sd(dataset$extraversion[dataset$nationality=="UK"]),
+          sd(dataset$extraversion[dataset$nationality=="France"]),
+          sd(dataset$extraversion[dataset$nationality=="Poland"])),
+      #neurotism mean 
+        c(mean(dataset$neurotism[dataset$nationality=="Netherlands"]),
+          mean(dataset$neurotism[dataset$nationality=="Germany"]),
+          mean(dataset$neurotism[dataset$nationality=="UK"]),
+          mean(dataset$neurotism[dataset$nationality=="France"]),
+          mean(dataset$neurotism[dataset$nationality=="Poland"])),
+      #neurotism standard deviation 
+        c(sd(dataset$neurotism[dataset$nationality=="Netherlands"]),
+          sd(dataset$neurotism[dataset$nationality=="Germany"]),
+          sd(dataset$neurotism[dataset$nationality=="UK"]),
+          sd(dataset$neurotism[dataset$nationality=="France"]),
+          sd(dataset$neurotism[dataset$nationality=="Poland"])),
+      #openess to experience mean 
+        c(mean(dataset$openess[dataset$nationality=="Netherlands"]),
+          mean(dataset$openess[dataset$nationality=="Germany"]),
+          mean(dataset$openess[dataset$nationality=="UK"]),
+          mean(dataset$openess[dataset$nationality=="France"]),
+          mean(dataset$openess[dataset$nationality=="Poland"])),
+      #openess to experience standard deviation 
+        c(sd(dataset$openess[dataset$nationality=="Netherlands"]),
+          sd(dataset$openess[dataset$nationality=="Germany"]),
+          sd(dataset$openess[dataset$nationality=="UK"]),
+          sd(dataset$openess[dataset$nationality=="France"]),
+          sd(dataset$openess[dataset$nationality=="Poland"]))
+    ), 
+  #format table
+    col.names = c("", "agreeableness (M)", "agreeableness (SD)", "conscientiousness (M)", "conscientiousness (SD)", "extraversion (M)", "extraversion (SD)", 
+                    "neurotism (M)", "neurotism (SD)", "openess (M)", "openess (SD)"),
+      align = c("r", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"), 
+      caption = "Personality distribution divided by nationality.", 
+      digits = 2)
+```
+
+### nationalities (Fig.)
+
+```{r 6.2}
+agreeableness <- 
+  ggplot(dataset, 
+         aes(x=nationality, 
+             y=agreeableness)) + 
+  geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Agreeableness", 
+        x = "nationality", 
+        y = "level of agreeableness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+conscientiousness <- 
+  ggplot(dataset, 
+         aes(x=nationality, 
+             y=conscientiousness)) + 
+  geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Conscientiousness", 
+        x = "nationality", 
+        y = "level of conscientiousness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+extraversion <- 
+  ggplot(dataset, 
+         aes(x=nationality, 
+             y=extraversion)) + 
+  geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Extraversion", 
+        x = "nationality", 
+        y = "level of extraversion") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+neurotism <- 
+  ggplot(dataset, 
+         aes(x=nationality, 
+             y=neurotism)) + 
+  geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Neurotism", 
+        x = "nationality", 
+        y = "level of neurotism") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+openess <- 
+  ggplot(dataset, 
+         aes(x=nationality, 
+             y=openess)) + 
+  geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Openess to experience", 
+        x = "nationality", 
+        y = "level of openess to experience") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+ggarrange(agreeableness, conscientiousness, extraversion, neurotism, openess)
+```
+
+### awareness (Tab.)
+
+```{r 6.3}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        c("unaware", "implicitly aware", "aware"),
+      #agreeableness mean
+        c(mean(dataset$agreeableness[dataset$awareness=="unaware"]),
+          mean(dataset$agreeableness[dataset$awareness=="implicitly aware"]),
+          mean(dataset$agreeableness[dataset$awareness=="aware"])),
+      #agreeableness standard deviation
+        c(sd(dataset$agreeableness[dataset$awareness=="unaware"]),
+          sd(dataset$agreeableness[dataset$awareness=="implicitly aware"]),
+          sd(dataset$agreeableness[dataset$awareness=="aware"])),
+      #conscientiousness mean
+        c(mean(dataset$conscientiousness[dataset$awareness=="unaware"]),
+          mean(dataset$conscientiousness[dataset$awareness=="implicitly aware"]),
+          mean(dataset$conscientiousness[dataset$awareness=="aware"])),
+      #conscientiousness standard deviation 
+        c(sd(dataset$conscientiousness[dataset$awareness=="unaware"]),
+          sd(dataset$conscientiousness[dataset$awareness=="implicitly aware"]),
+          sd(dataset$conscientiousness[dataset$awareness=="aware"])),
+      #extraversion mean 
+        c(mean(dataset$extraversion[dataset$awareness=="unaware"]),
+          mean(dataset$extraversion[dataset$awareness=="implicitly aware"]),
+          mean(dataset$extraversion[dataset$awareness=="aware"])),
+      #extraversion standard deviation 
+        c(sd(dataset$extraversion[dataset$awareness=="unaware"]),
+          sd(dataset$extraversion[dataset$awareness=="implicitly aware"]),
+          sd(dataset$extraversion[dataset$awareness=="aware"])),
+      #neurotism mean 
+        c(mean(dataset$neurotism[dataset$awareness=="unaware"]),
+          mean(dataset$neurotism[dataset$awareness=="implicitly aware"]),
+          mean(dataset$neurotism[dataset$awareness=="aware"])),
+      #neurotism standard deviation 
+        c(sd(dataset$neurotism[dataset$awareness=="unaware"]),
+          sd(dataset$neurotism[dataset$awareness=="implicitly aware"]),
+          sd(dataset$neurotism[dataset$awareness=="aware"])),
+      #openess to experience mean 
+        c(mean(dataset$openess[dataset$awareness=="unaware"]),
+          mean(dataset$openess[dataset$awareness=="implicitly aware"]),
+          mean(dataset$openess[dataset$awareness=="aware"])),
+      #openess to experience standard deviation 
+        c(sd(dataset$openess[dataset$awareness=="unaware"]),
+          sd(dataset$openess[dataset$awareness=="implicitly aware"]),
+          sd(dataset$openess[dataset$awareness=="aware"]))
+    ),
+  
+  #format table
+    col.names = c("", "agreeableness (M)", "agreeableness (SD)", "conscientiousness (M)", "conscientiousness (SD)", "extraversion (M)", "extraversion (SD)", 
+                    "neurotism (M)", "neurotism (SD)", "openess (M)", "openess (SD)"),
+    align = c("r", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"), 
+    caption = "Personality distribution divided by awareness.", 
+    digits = 2
+)
+```
+
+### awareness (Fig.)
+
+```{r 6.4}
+agreeableness_awareness <- 
+  ggplot(dataset, 
+         aes(x=awareness, 
+             y=agreeableness)) + 
+  geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Agreeableness", 
+        x = "awareness", 
+        y = "level of agreeableness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+conscientiousness_awareness <- 
+  ggplot(dataset, 
+         aes(x=awareness, 
+             y=conscientiousness)) + 
+  geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Conscientiousness", 
+        x = "awareness", 
+        y = "level of conscientiousness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+extraversion_awareness <- 
+  ggplot(dataset, 
+         aes(x=awareness, 
+             y=extraversion)) + 
+  geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Extraversion", 
+        x = "awareness", 
+        y = "level of extraversion") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+neurotism_awareness <- 
+  ggplot(dataset, 
+         aes(x=awareness, 
+             y=neurotism)) + 
+  geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Neurotism", 
+        x = "awareness", 
+        y = "level of neurotism") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+openess_awareness <- 
+  ggplot(dataset, 
+         aes(x=awareness, 
+             y=openess)) + 
+  geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) +
+  labs(title = "Openess to experience", 
+        x = "awareness", 
+        y = "level of openess to experience") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+ggarrange(agreeableness_awareness, conscientiousness_awareness, extraversion_awareness, neurotism_awareness, openess_awareness)
+```
+
+### agreeableness (Tab.)
+
+```{r 6.5}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"], 
+      #unaware mean
+        c(mean(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          mean(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #unaware standard deviation 
+        c(sd(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          sd(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$agreeableness[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #implicitly aware mean 
+        c(mean(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          mean(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #implicitly aware standard deviation 
+        c(sd(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          sd(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$agreeableness[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #aware mean 
+        c(mean(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          mean(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          mean(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Poland"])),
+      #aware standard deviation 
+        c(sd(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          sd(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$agreeableness[dataset$awareness=="aware" & dataset$nationality=="Poland"]))
+    ),
+    
+  #format table
+    col.names = c("", "unaware (M)", "unaware (SD)", "implicitly aware (M)", "implicitly aware (SD)", "aware (M)", "aware (SD)"), 
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Agreeableness distribution divided by nationality and awareness.", 
+    digits = 2
+)
+```
+### agreeableness (Fig.)
+
+```{r 6.6}
+ggplot(dataset, 
+       aes(x=nationality, 
+           y=agreeableness, 
+           fill = awareness)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "distribution divided by nationality and awareness", 
+        x = "nationality", 
+        y = "level of agreeableness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+```
+
+### conscientiousness (Tab.)
+
+```{r 6.7}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #unaware mean 
+        c(mean(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          mean(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #unaware standard deviation 
+        c(sd(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          sd(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$conscientiousness[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #implicitly aware mean 
+        c(mean(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          mean(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #implicitly aware standard deviation 
+        c(sd(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          sd(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$conscientiousness[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #aware mean 
+        c(mean(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          mean(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          mean(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Poland"])),
+      #aware standard deviation 
+        c(sd(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          sd(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$conscientiousness[dataset$awareness=="aware" & dataset$nationality=="Poland"]))
+    ),
+    
+  #format table
+    col.names = c("", "unaware (M)", "unaware (SD)", "implicitly aware (M)", "implicitly aware (SD)", "aware (M)", "aware (SD)"),      
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Conscientiousness distribution divided by nationality and awareness.", 
+    digits = 2
+)
+```
+### conscientiousness (Fig.)
+
+```{r 6.8}
+ggplot(dataset, 
+       aes(x=nationality, 
+           y=conscientiousness, 
+           fill = awareness)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Conscientiousness distribution divided by nationality and awareness", 
+        x = "nationality", 
+        y = "level of conscientiousness") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+```
+
+### extraversion (Tab.)
+
+```{r 6.9}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #unaware mean 
+        c(mean(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          mean(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #unaware standard deviation 
+        c(sd(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          sd(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$extraversion[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #implicitly aware mean 
+        c(mean(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          mean(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #implicitly aware standard deviation 
+        c(sd(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          sd(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$extraversion[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #aware mean 
+        c(mean(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          mean(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          mean(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Poland"])),
+      #aware standard deviation 
+        c(sd(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          sd(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$extraversion[dataset$awareness=="aware" & dataset$nationality=="Poland"]))
+    ),
+    
+  #format table
+    col.names = c("", "unaware (M)", "unaware (SD)", "implicitly aware (M)", "implicitly aware (SD)", "aware (M)", "aware (SD)"), 
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Extraversion distribution divided by nationality and awareness.", 
+    digits = 2
+)
+```
+### extraversion (Fig.)
+
+```{r 6.10}
+ggplot(dataset, 
+       aes(x=nationality, 
+           y=extraversion, 
+           fill = awareness)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Extraversion distribution divided by nationality and awareness", 
+        x = "nationality", 
+        y = "level of extraversion") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+```
+
+### neurotism (Tab.)
+
+```{r 6.11}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #unaware mean 
+        c(mean(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          mean(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #unaware standard deviation 
+        c(sd(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          sd(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$neurotism[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #implicitly aware mean 
+        c(mean(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          mean(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #implicitly aware standard deviation 
+        c(sd(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          sd(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$neurotism[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #aware mean 
+        c(mean(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          mean(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          mean(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Poland"])),
+      #aware standard deviation 
+        c(sd(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          sd(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$neurotism[dataset$awareness=="aware" & dataset$nationality=="Poland"]))
+    ), 
+    
+  #format table
+    col.names = c("", "unaware (M)", "unaware (SD)", "implicitly aware (M)", "implicitly aware (SD)", "aware (M)", "aware (SD)"), 
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Neurotism distribution divided by nationality and awareness.", 
+    digits = 2
+)
+```
+### neurotism (Fig.)
+
+```{r 6.12}
+ggplot(dataset, aes(x=nationality, y=neurotism, fill = awareness)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Neurotism distribution divided by nationality and awareness", 
+        x = "nationality", 
+        y = "level of neurotism") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+```
+
+### openess (Tab.)
+
+```{r 6.13}
+kable(
+  #create dataframe
+    data.frame(
+      #labels
+        nationality["Var1"],
+      #unaware mean 
+        c(mean(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          mean(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #unaware standard deviation 
+        c(sd(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="UK"]),
+          sd(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$openess[dataset$awareness=="unaware" & dataset$nationality=="Poland"])),
+      #implicitly aware mean 
+        c(mean(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          mean(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #implicitly aware standard deviation 
+        c(sd(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"]),
+          sd(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$openess[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"])),
+      #aware mean 
+        c(mean(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          mean(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          mean(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Poland"])),
+      #aware standard deviation 
+        c(sd(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="UK"]),
+          sd(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$openess[dataset$awareness=="aware" & dataset$nationality=="Poland"]))
+    ),
+    
+  #format table
+    col.names = c("", "unaware (M)", "unaware (SD)", "implicitly aware (M)", "implicitly aware (SD)", "aware (M)", "aware (SD)"), 
+    align = c("r", "c", "c", "c", "c", "c", "c"), 
+    caption = "Openness to experience distribution divided by nationality and awareness.", 
+    digits = 2
+)
+```
+
+### openess (Fig.)
+
+```{r 6.14}
+ggplot(dataset, aes(x=nationality, y=openess, fill = awareness)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Openess to experience distribution divided by nationality and awareness", 
+        x = "nationality", 
+        y = "level of openess to experience") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  coord_flip()
+
+```
+
+
+
+
+
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+### media use
+**Media use**
+
+# Discussion
+### Chart 1
+```{r}
+dygraph(cars)
+```
+
+# Data 
+
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### Data: mpg {data-height=800}
+
+```{r}
+datatable(mpg, filter = list(position = 'top', clear = TRUE, plain = FALSE), extensions = c('Buttons','FixedColumns'), options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf'),
+    scrollX = TRUE,
+    fixedColumns = TRUE
+  ))
+```   
+ 
+### Data: other
+    
+```{r}
+```
+
+
+
+
+# Sidebar {.sidebar}
+
+**Welcome**
+
+Here we have general text that can help you orient yourself.
+
+* You may share a link to this website using the share button in the top right corner.
+* The [Data] page contains a table browser for each dataset used in this study. You may also download the data as *CSV* or *Excel* files for your own analysis.
+
+
