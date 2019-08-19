@@ -25,6 +25,20 @@ library(ggpubr)
 
 ```{r import data, include = FALSE}
 dataset = read.spss("filterbubble.sav", use.value.labels=FALSE, to.data.frame=TRUE)
+
+dataset$nationality[dataset$nationality==0] <- "Netherlands"
+dataset$nationality[dataset$nationality==1] <- "Germany"
+dataset$nationality[dataset$nationality==2] <- "UK"
+dataset$nationality[dataset$nationality==3] <- "France"
+dataset$nationality[dataset$nationality==4] <- "Poland"
+
+dataset$awareness[dataset$awareness==0] <- "unaware"
+dataset$awareness[dataset$awareness==1] <- "implicitly aware"
+dataset$awareness[dataset$awareness==2] <- "aware"
+
+```
+
+```{r dataset prep anova, include = FALSE}
 anovanat = data.frame(dataset)
 anovaawa = data.frame(dataset)
 ```
@@ -101,18 +115,6 @@ Row
 The sample consisted of a total of 1238 respondents from 5 different countries. The distribution of the number of respondents per country can be found below:
 
 ```{r 0.1}
-dataset$nationality[dataset$nationality==0] <- "Netherlands"
-dataset$nationality[dataset$nationality==1] <- "Germany"
-dataset$nationality[dataset$nationality==2] <- "UK"
-dataset$nationality[dataset$nationality==3] <- "France"
-dataset$nationality[dataset$nationality==4] <- "Poland"
-
-dataset$awareness[dataset$awareness==0] <- "unaware"
-dataset$awareness[dataset$awareness==1] <- "implicitly aware"
-dataset$awareness[dataset$awareness==2] <- "aware"
-
-
-
 nationality           <- as.data.frame(table((dataset$nationality)))
 nationality["Perc"]   <- round(nationality$Freq / nrow(dataset) * 100, digits = 0)
 
@@ -222,6 +224,15 @@ ggplot(dataset) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### nationalities (chi-squared)
+```{r chi 1.1}
+nationality.data <- data.frame(dataset$nationality, dataset$awareness)
+nationality.data = table(dataset$nationality, dataset$awareness)
+print(nationality.data)
+
+print(chisq.test(nationality.data))
+```
+
 Row 
 -------------------------------------
 ### Hypothesis 1: Demographic Features
@@ -318,6 +329,15 @@ ggplot(dataset) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### nationalities (chi-squared)
+```{r chi 2.1}
+gender.data <- data.frame(dataset$nationality, dataset$gender)
+gender.data = table(dataset$nationality, dataset$gender)
+print(gender.data)
+
+print(chisq.test(gender.data))
+```
+
 ### awareness (Tab.)
 ```{r 2.5}
 df25 <- as.data.frame(table(dataset$awareness, dataset$gender))
@@ -364,6 +384,14 @@ ggplot(dataset) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### awareness (chi-squared)
+```{r chi 2.2}
+gender.data <- data.frame(dataset$awareness, dataset$gender)
+gender.data = table(dataset$awareness, dataset$gender)
+print(gender.data)
+
+print(chisq.test(gender.data))
+```
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -476,23 +504,23 @@ ggplot(dataset,
 
 ```{r anova 3.1}
 #normality check 
-FR <- ggqqplot(FR$age) + 
+FRage <- ggqqplot(FR$age) + 
   labs(title = "France") +
   theme(plot.title = element_text(hjust = 0.5))
-DE <- ggqqplot(DE$age)+ 
+DEage <- ggqqplot(DE$age)+ 
   labs(title = "Germany") +
   theme(plot.title = element_text(hjust = 0.5))
-NL <- ggqqplot(NL$age)+ 
+NLage <- ggqqplot(NL$age)+ 
   labs(title = "Netherlands") +
   theme(plot.title = element_text(hjust = 0.5))
-PL <- ggqqplot(PL$age)+ 
+PLage <- ggqqplot(PL$age)+ 
   labs(title = "Poland") +
   theme(plot.title = element_text(hjust = 0.5))
-UK <- ggqqplot(UK$age)+ 
+UKage <- ggqqplot(UK$age)+ 
   labs(title = "UK") +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggarrange(FR, DE, NL, PL, UK)
+ggarrange(FRage, DEage, NLage, PLage, UKage)
 
 ```
 
@@ -572,6 +600,46 @@ ggplot(dataset,
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### awareness (normality)
+
+```{r anova 3.5}
+#normality check 
+AAage <- ggqqplot(AA$age) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIage <- ggqqplot(AI$age)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUage <- ggqqplot(AU$age)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAage, AIage, AUage)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 3.6}
+bartlett.test(age ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 3.7}
+kable(anova(lm(age ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 3.8}
+TukeyHSD(aov(lm(age ~ awareness, data = anovaawa)))
+```
 
 
 Row {.tabset .tabset-fade}
@@ -658,6 +726,15 @@ ggplot(dataset) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### nationalities (chi-squared)
+```{r chi 4.1}
+education.data <- data.frame(dataset$nationality, dataset$education)
+education.data = table(dataset$nationality, dataset$education)
+print(education.data)
+
+print(chisq.test(education.data))
+```
+
 ### awareness (Tab.)
 ```{r 4.5}
 df45 <- as.data.frame(table(dataset$awareness, dataset$education))
@@ -702,6 +779,15 @@ ggplot(dataset) +
         y = "frequency") +
   theme_light() + 
   theme(plot.title = element_text(hjust = 0.5))
+```
+
+### awareness (chi-squared)
+```{r chi 4.2}
+education.data <- data.frame(dataset$awareness, dataset$education)
+education.data = table(dataset$awareness, dataset$education)
+print(education.data)
+
+print(chisq.test(education.data))
 ```
 
 Row 
@@ -768,6 +854,53 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 5.1}
+#normality check 
+FRagreeableness <- ggqqplot(FR$agreeableness) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEagreeableness <- ggqqplot(DE$agreeableness)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLagreeableness <- ggqqplot(NL$agreeableness)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLagreeableness <- ggqqplot(PL$agreeableness)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKagreeableness <- ggqqplot(UK$agreeableness)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRagreeableness, DEagreeableness, NLagreeableness, PLagreeableness, UKagreeableness)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 5.2}
+bartlett.test(agreeableness ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 5.3}
+kable(anova(lm(agreeableness ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 5.4}
+TukeyHSD(aov(lm(agreeableness ~ nationality, data = anovanat)))
+```
+
+
 ### awareness (Tab.)
 
 ```{r 5.3}
@@ -809,6 +942,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 5.5}
+#normality check 
+AAagreeableness <- ggqqplot(AA$agreeableness) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIagreeableness <- ggqqplot(AI$agreeableness)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUagreeableness <- ggqqplot(AU$agreeableness)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAagreeableness, AIagreeableness, AUagreeableness)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 5.6}
+bartlett.test(agreeableness ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 5.7}
+kable(anova(lm(agreeableness ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 5.8}
+TukeyHSD(aov(lm(agreeableness ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -932,6 +1106,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 6.1}
+#normality check 
+FRconscientiousness <- ggqqplot(FR$conscientiousness) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEconscientiousness <- ggqqplot(DE$conscientiousness)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLconscientiousness <- ggqqplot(NL$conscientiousness)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLconscientiousness <- ggqqplot(PL$conscientiousness)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKconscientiousness <- ggqqplot(UK$conscientiousness)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRconscientiousness, DEconscientiousness, NLconscientiousness, PLconscientiousness, UKconscientiousness)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 6.2}
+bartlett.test(conscientiousness ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 6.3}
+kable(anova(lm(conscientiousness ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 6.4}
+TukeyHSD(aov(lm(conscientiousness ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 6.3}
@@ -973,6 +1193,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 6.5}
+#normality check 
+AAconscientiousness <- ggqqplot(AA$conscientiousness) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIconscientiousness <- ggqqplot(AI$conscientiousness)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUconscientiousness <- ggqqplot(AU$conscientiousness)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAconscientiousness, AIconscientiousness, AUconscientiousness)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 6.6}
+bartlett.test(conscientiousness ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 6.7}
+kable(anova(lm(conscientiousness ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 6.8}
+TukeyHSD(aov(lm(conscientiousness ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1096,6 +1357,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 7.1}
+#normality check 
+FRextraversion <- ggqqplot(FR$extraversion) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEextraversion <- ggqqplot(DE$extraversion)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLextraversion <- ggqqplot(NL$extraversion)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLextraversion <- ggqqplot(PL$extraversion)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKextraversion <- ggqqplot(UK$extraversion)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRextraversion, DEextraversion, NLextraversion, PLextraversion, UKextraversion)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 7.2}
+bartlett.test(extraversion ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 7.3}
+kable(anova(lm(extraversion ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 7.4}
+TukeyHSD(aov(lm(extraversion ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 7.3}
@@ -1137,6 +1444,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 7.5}
+#normality check 
+AAextraversion <- ggqqplot(AA$extraversion) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIextraversion <- ggqqplot(AI$extraversion)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUextraversion <- ggqqplot(AU$extraversion)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAextraversion, AIextraversion, AUextraversion)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 7.6}
+bartlett.test(extraversion ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 7.7}
+kable(anova(lm(extraversion ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 7.8}
+TukeyHSD(aov(lm(extraversion ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1260,6 +1608,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 8.1}
+#normality check 
+FRneurotism <- ggqqplot(FR$neurotism) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEneurotism <- ggqqplot(DE$neurotism)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLneurotism <- ggqqplot(NL$neurotism)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLneurotism <- ggqqplot(PL$neurotism)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKneurotism <- ggqqplot(UK$neurotism)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRneurotism, DEneurotism, NLneurotism, PLneurotism, UKneurotism)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 8.2}
+bartlett.test(neurotism ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 8.3}
+kable(anova(lm(neurotism ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 8.4}
+TukeyHSD(aov(lm(neurotism ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 8.3}
@@ -1301,6 +1695,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 8.5}
+#normality check 
+AAneurotism <- ggqqplot(AA$neurotism) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIneurotism <- ggqqplot(AI$neurotism)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUneurotism <- ggqqplot(AU$neurotism)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAneurotism, AIneurotism, AUneurotism)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 8.6}
+bartlett.test(neurotism ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 8.7}
+kable(anova(lm(neurotism ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 8.8}
+TukeyHSD(aov(lm(neurotism ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1424,6 +1859,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 9.1}
+#normality check 
+FRopeness <- ggqqplot(FR$openess) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEopeness <- ggqqplot(DE$openess)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLopeness <- ggqqplot(NL$openess)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLopeness <- ggqqplot(PL$openess)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKopeness <- ggqqplot(UK$openess)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRopeness, DEopeness, NLopeness, PLopeness, UKopeness)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 9.2}
+bartlett.test(openess ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 9.3}
+kable(anova(lm(openess ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 9.4}
+TukeyHSD(aov(lm(openess ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 9.3}
@@ -1465,6 +1946,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 9.5}
+#normality check 
+AAopeness <- ggqqplot(AA$openess) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIopeness <- ggqqplot(AI$openess)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUopeness <- ggqqplot(AU$openess)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAopeness, AIopeness, AUopeness)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 9.6}
+bartlett.test(openess ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 9.7}
+kable(anova(lm(openess ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 9.8}
+TukeyHSD(aov(lm(openess ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1605,6 +2127,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 10.1}
+#normality check 
+FRmedia_diversity_estimation <- ggqqplot(FR$media_diversity_estimation) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_diversity_estimation <- ggqqplot(DE$media_diversity_estimation)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_diversity_estimation <- ggqqplot(NL$media_diversity_estimation)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_diversity_estimation <- ggqqplot(PL$media_diversity_estimation)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_diversity_estimation <- ggqqplot(UK$media_diversity_estimation)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_diversity_estimation, DEmedia_diversity_estimation, NLmedia_diversity_estimation, PLmedia_diversity_estimation, UKmedia_diversity_estimation)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 10.2}
+bartlett.test(media_diversity_estimation ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 10.3}
+kable(anova(lm(media_diversity_estimation ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 10.4}
+TukeyHSD(aov(lm(media_diversity_estimation ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 10.3}
@@ -1646,6 +2214,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 10.5}
+#normality check 
+AAmedia_diversity_estimation <- ggqqplot(AA$media_diversity_estimation) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_diversity_estimation <- ggqqplot(AI$media_diversity_estimation)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_diversity_estimation <- ggqqplot(AU$media_diversity_estimation)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_diversity_estimation, AImedia_diversity_estimation, AUmedia_diversity_estimation)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 10.6}
+bartlett.test(media_diversity_estimation ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 10.7}
+kable(anova(lm(media_diversity_estimation ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 10.8}
+TukeyHSD(aov(lm(media_diversity_estimation ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1769,6 +2378,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 11.1}
+#normality check 
+FRmedia_diversity_factor <- ggqqplot(FR$media_diversity_factor) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_diversity_factor <- ggqqplot(DE$media_diversity_factor)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_diversity_factor <- ggqqplot(NL$media_diversity_factor)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_diversity_factor <- ggqqplot(PL$media_diversity_factor)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_diversity_factor <- ggqqplot(UK$media_diversity_factor)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_diversity_factor, DEmedia_diversity_factor, NLmedia_diversity_factor, PLmedia_diversity_factor, UKmedia_diversity_factor)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 11.2}
+bartlett.test(media_diversity_factor ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 11.3}
+kable(anova(lm(media_diversity_factor ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 11.4}
+TukeyHSD(aov(lm(media_diversity_factor ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 11.3}
@@ -1810,6 +2465,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 11.5}
+#normality check 
+AAmedia_diversity_factor <- ggqqplot(AA$media_diversity_factor) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_diversity_factor <- ggqqplot(AI$media_diversity_factor)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_diversity_factor <- ggqqplot(AU$media_diversity_factor)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_diversity_factor, AImedia_diversity_factor, AUmedia_diversity_factor)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 11.6}
+bartlett.test(media_diversity_factor ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 11.7}
+kable(anova(lm(media_diversity_factor ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 11.8}
+TukeyHSD(aov(lm(media_diversity_factor ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -1932,6 +2628,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 12.1}
+#normality check 
+FRmedia_factors_total <- ggqqplot(FR$media_factors_total) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_factors_total <- ggqqplot(DE$media_factors_total)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_factors_total <- ggqqplot(NL$media_factors_total)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_factors_total <- ggqqplot(PL$media_factors_total)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_factors_total <- ggqqplot(UK$media_factors_total)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_factors_total, DEmedia_factors_total, NLmedia_factors_total, PLmedia_factors_total, UKmedia_factors_total)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 12.2}
+bartlett.test(media_factors_total ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 12.3}
+kable(anova(lm(media_factors_total ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 12.4}
+TukeyHSD(aov(lm(media_factors_total ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 12.3}
@@ -1972,6 +2714,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 12.5}
+#normality check 
+AAmedia_factors_total <- ggqqplot(AA$media_factors_total) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_factors_total <- ggqqplot(AI$media_factors_total)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_factors_total <- ggqqplot(AU$media_factors_total)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_factors_total, AImedia_factors_total, AUmedia_factors_total)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 12.6}
+bartlett.test(media_factors_total ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 12.7}
+kable(anova(lm(media_factors_total ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 12.8}
+TukeyHSD(aov(lm(media_factors_total ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab)
@@ -2096,6 +2879,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 13.1}
+#normality check 
+FRmedia_social <- ggqqplot(FR$media_social) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_social <- ggqqplot(DE$media_social)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_social <- ggqqplot(NL$media_social)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_social <- ggqqplot(PL$media_social)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_social <- ggqqplot(UK$media_social)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_social, DEmedia_social, NLmedia_social, PLmedia_social, UKmedia_social)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 13.2}
+bartlett.test(media_social ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 13.3}
+kable(anova(lm(media_social ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 13.4}
+TukeyHSD(aov(lm(media_social ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 13.3}
@@ -2136,6 +2965,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 13.5}
+#normality check 
+AAmedia_social <- ggqqplot(AA$media_social) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_social <- ggqqplot(AI$media_social)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_social <- ggqqplot(AU$media_social)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_social, AImedia_social, AUmedia_social)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 13.6}
+bartlett.test(media_social ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 13.7}
+kable(anova(lm(media_social ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 13.8}
+TukeyHSD(aov(lm(media_social ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab)
@@ -2224,17 +3094,17 @@ kable(
       #labels
         nationality["Var1"],
       #frequency media use mean 
-        c(mean(dataset$media_social[dataset$nationality=="France"]),
-          mean(dataset$media_social[dataset$nationality=="Germany"]),
-          mean(dataset$media_social[dataset$nationality=="Netherlands"]),
-          mean(dataset$media_social[dataset$nationality=="Poland"]),
-          mean(dataset$media_social[dataset$nationality=="UK"])),
+        c(mean(dataset$media_broadcast[dataset$nationality=="France"]),
+          mean(dataset$media_broadcast[dataset$nationality=="Germany"]),
+          mean(dataset$media_broadcast[dataset$nationality=="Netherlands"]),
+          mean(dataset$media_broadcast[dataset$nationality=="Poland"]),
+          mean(dataset$media_broadcast[dataset$nationality=="UK"])),
       #frequency media use standard deviation 
-        c(sd(dataset$media_social[dataset$nationality=="France"]),
-          sd(dataset$media_social[dataset$nationality=="Germany"]),
-          sd(dataset$media_social[dataset$nationality=="Netherlands"]),
-          sd(dataset$media_social[dataset$nationality=="Poland"]),
-          sd(dataset$media_social[dataset$nationality=="UK"]))
+        c(sd(dataset$media_broadcast[dataset$nationality=="France"]),
+          sd(dataset$media_broadcast[dataset$nationality=="Germany"]),
+          sd(dataset$media_broadcast[dataset$nationality=="Netherlands"]),
+          sd(dataset$media_broadcast[dataset$nationality=="Poland"]),
+          sd(dataset$media_broadcast[dataset$nationality=="UK"]))
     ), 
   #format table
     col.names = c("", "mean", "standard deviation"),
@@ -2249,7 +3119,7 @@ kable(
 
   ggplot(dataset, 
          aes(x=nationality, 
-             y=media_social)) + 
+             y=media_broadcast)) + 
   geom_boxplot(fill = c("#e8f1fa", "#c7ddf2", "#8ebae5","#407fb7","#00549f")) +
   labs(title = "Distribution broadcast media frequency by nationality (0 = never, 5 = daily)", 
         x = "nationality", 
@@ -2258,6 +3128,52 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### nationalities (normality)
+
+```{r anova 14.1}
+#normality check 
+FRmedia_broadcast <- ggqqplot(FR$media_broadcast) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_broadcast <- ggqqplot(DE$media_broadcast)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_broadcast <- ggqqplot(NL$media_broadcast)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_broadcast <- ggqqplot(PL$media_broadcast)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_broadcast <- ggqqplot(UK$media_broadcast)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_broadcast, DEmedia_broadcast, NLmedia_broadcast, PLmedia_broadcast, UKmedia_broadcast)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 14.2}
+bartlett.test(media_broadcast ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 14.3}
+kable(anova(lm(media_broadcast ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 14.4}
+TukeyHSD(aov(lm(media_broadcast ~ nationality, data = anovanat)))
 ```
 
 ### awareness (Tab.)
@@ -2269,13 +3185,13 @@ kable(
       #labels
         c("aware", "implicitly aware", "unaware"),
         #frequency broadcast media mean
-        c(mean(dataset$media_social[dataset$awareness=="aware"]),
-          mean(dataset$media_social[dataset$awareness=="implicitly aware"]),
-          mean(dataset$media_social[dataset$awareness=="unaware"])),
+        c(mean(dataset$media_broadcast[dataset$awareness=="aware"]),
+          mean(dataset$media_broadcast[dataset$awareness=="implicitly aware"]),
+          mean(dataset$media_broadcast[dataset$awareness=="unaware"])),
       #frequency broadcast media standard deviation
-        c(sd(dataset$media_social[dataset$awareness=="aware"]),
-          sd(dataset$media_social[dataset$awareness=="implicitly aware"]),
-          sd(dataset$media_social[dataset$awareness=="unaware"]))
+        c(sd(dataset$media_broadcast[dataset$awareness=="aware"]),
+          sd(dataset$media_broadcast[dataset$awareness=="implicitly aware"]),
+          sd(dataset$media_broadcast[dataset$awareness=="unaware"]))
     ),
   
   #format table
@@ -2285,13 +3201,14 @@ kable(
       digits = 2
 )
 ```
+
 ### awareness (Fig.)
 
 ```{r 14.4}
  
   ggplot(dataset, 
          aes(x=awareness, 
-             y=media_social)) + 
+             y=media_broadcast)) + 
   geom_boxplot(fill = c("#8ebae5","#407fb7","#00549f")) +
   labs(title = "Distribution broadcast media frequency by awareness group (0 = never, 5 = daily)", 
         x = "awareness", 
@@ -2302,6 +3219,47 @@ kable(
 
 ```
 
+### awareness (normality)
+
+```{r anova 14.5}
+#normality check 
+AAmedia_broadcast <- ggqqplot(AA$media_broadcast) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_broadcast <- ggqqplot(AI$media_broadcast)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_broadcast <- ggqqplot(AU$media_broadcast)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_broadcast, AImedia_broadcast, AUmedia_broadcast)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 14.6}
+bartlett.test(media_broadcast ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 14.7}
+kable(anova(lm(media_broadcast ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 14.8}
+TukeyHSD(aov(lm(media_broadcast ~ awareness, data = anovaawa)))
+```
+
 ### both (Tab)
 ```{r 14.5}
 kable(
@@ -2310,41 +3268,41 @@ kable(
       #labels
         nationality["Var1"], 
       #aware mean
-        c(mean(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="France"]),
-          mean(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
-	  mean(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
-          mean(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Poland"]),
-          mean(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="UK"])),
+        c(mean(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          mean(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+	  mean(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Poland"]),
+          mean(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="UK"])),
       #aware standard deviation 
-        c(sd(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="France"]),
-          sd(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
-          sd(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
-          sd(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="Poland"]),
-          sd(dataset$media_social[dataset$awareness=="aware" & dataset$nationality=="UK"])),
+        c(sd(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="France"]),
+          sd(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Germany"]),
+          sd(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="Poland"]),
+          sd(dataset$media_broadcast[dataset$awareness=="aware" & dataset$nationality=="UK"])),
       #implicitly aware mean 
-        c(mean(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
-          mean(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
-          mean(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
-          mean(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"]),
-          mean(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"])),
+        c(mean(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          mean(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          mean(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"]),
+          mean(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"])),
       #implicitly aware standard deviation 
-        c(sd(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
-          sd(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
-          sd(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
-          sd(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"]),
-          sd(dataset$media_social[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"])),
+        c(sd(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="France"]),
+          sd(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Germany"]),
+          sd(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="Poland"]),
+          sd(dataset$media_broadcast[dataset$awareness=="implicitly aware" & dataset$nationality=="UK"])),
       #unaware mean 
-        c(mean(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="France"]),
-          mean(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
-          mean(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
-          mean(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Poland"]),
-          mean(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="UK"])),
+        c(mean(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          mean(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          mean(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          mean(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Poland"]),
+          mean(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="UK"])),
       #unaware standard deviation 
-        c(sd(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="France"]),
-          sd(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
-          sd(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
-          sd(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="Poland"]),
-          sd(dataset$media_social[dataset$awareness=="unaware" & dataset$nationality=="UK"]))
+        c(sd(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="France"]),
+          sd(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Germany"]),
+          sd(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Netherlands"]),
+          sd(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="Poland"]),
+          sd(dataset$media_broadcast[dataset$awareness=="unaware" & dataset$nationality=="UK"]))
     ),
     
   #format table
@@ -2360,7 +3318,7 @@ kable(
 ```{r 14.6, echo = FALSE}
 ggplot(dataset, 
        aes(x=nationality, 
-           y=media_social, 
+           y=media_broadcast, 
            fill = awareness)) + 
   geom_boxplot() +
   scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
@@ -2424,6 +3382,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 15.1}
+#normality check 
+FRmedia_print <- ggqqplot(FR$media_print) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_print <- ggqqplot(DE$media_print)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_print <- ggqqplot(NL$media_print)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_print <- ggqqplot(PL$media_print)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_print <- ggqqplot(UK$media_print)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_print, DEmedia_print, NLmedia_print, PLmedia_print, UKmedia_print)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 15.2}
+bartlett.test(media_print ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 15.3}
+kable(anova(lm(media_print ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 15.4}
+TukeyHSD(aov(lm(media_print ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 15.3}
@@ -2464,6 +3468,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 15.5}
+#normality check 
+AAmedia_print <- ggqqplot(AA$media_print) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_print <- ggqqplot(AI$media_print)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_print <- ggqqplot(AU$media_print)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_print, AImedia_print, AUmedia_print)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 15.6}
+bartlett.test(media_print ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 15.7}
+kable(anova(lm(media_print ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 15.8}
+TukeyHSD(aov(lm(media_print ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab)
@@ -2655,6 +3700,15 @@ ggplot(subfb) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+### nationalities (chi-squared)
+```{r chi 16.1}
+facebook.data <- data.frame(dataset$nationality, dataset$facebook)
+facebook.data = table(dataset$nationality, dataset$facebook)
+print(facebook.data)
+
+print(chisq.test(facebook.data))
+```
+
 ### awareness (Tab.)
 ```{r 16.5}
 df94 <- as.data.frame(table(dataset$awareness, dataset$facebook))
@@ -2701,7 +3755,16 @@ ggplot(subfb) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r 16.7}
+### awareness (chi-squared)
+```{r chi 16.2}
+facebook.data <- data.frame(dataset$awareness, dataset$facebook)
+facebook.data = table(dataset$awareness, dataset$facebook)
+print(facebook.data)
+
+print(chisq.test(facebook.data))
+```
+
+```{r 16.7, include = FALSE}
 subsubfb <- subset(dataset, (!is.na(dataset$facebook)) & (!is.na(dataset$facebook_use_01)) & (!is.na(dataset$facebook_use_02)) & (!is.na(dataset$facebook_use_03)) & (!is.na(dataset$facebook_use_04)) & (!is.na(dataset$facebook_without_reading)))
 ```
 
@@ -2714,7 +3777,6 @@ Row {.tabset .tabset-fade}
 ### nationalities (Tab.)
 
 ```{r 17.1}
-
 kable(
   #create dataframe
     data.frame(
@@ -2755,6 +3817,60 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### nationalities (normality)
+
+```{r anova 17.1}
+subanovanat <- subset(anovanat, (!is.na(anovanat$facebook)) & (!is.na(anovanat$facebook_use_01)) & (!is.na(anovanat$facebook_use_02)) & (!is.na(anovanat$facebook_use_03)) & (!is.na(anovanat$facebook_use_04)) & (!is.na(anovanat$facebook_without_reading)))
+
+subNL <- subset(subanovanat, nationality == "Netherlands")
+subDE <- subset(subanovanat, nationality == "Germany")
+subUK <- subset(subanovanat, nationality == "UK")
+subFR <- subset(subanovanat, nationality == "France")
+subPL <- subset(subanovanat, nationality == "Poland")
+
+#normality check 
+FRfacebook_use_01 <- ggqqplot(subFR$facebook_use_01) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_use_01 <- ggqqplot(subDE$facebook_use_01)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_use_01 <- ggqqplot(subNL$facebook_use_01)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_use_01 <- ggqqplot(subPL$facebook_use_01)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_use_01 <- ggqqplot(subUK$facebook_use_01)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_use_01, DEfacebook_use_01, NLfacebook_use_01, PLfacebook_use_01, UKfacebook_use_01)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 17.2}
+bartlett.test(facebook_use_01 ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 17.3}
+kable(anova(lm(facebook_use_01 ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 17.4}
+TukeyHSD(aov(lm(facebook_use_01 ~ nationality, data = subanovanat)))
 ```
 
 ### awareness (Tab.)
@@ -2798,6 +3914,53 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 17.5}
+subanovaawa <- subset(anovaawa, (!is.na(anovaawa$facebook)) & (!is.na(anovaawa$facebook_use_01)) & (!is.na(anovaawa$facebook_use_02)) & (!is.na(anovaawa$facebook_use_03)) & (!is.na(anovaawa$facebook_use_04)) & (!is.na(anovaawa$facebook_without_reading)))
+
+subAA <- subset(subanovaawa, awareness == "aware")
+subAI <- subset(subanovaawa, awareness == "implicitly aware")
+subAU <- subset(subanovaawa, awareness == "unaware")
+
+#normality check 
+AAfacebook_use_01 <- ggqqplot(subAA$facebook_use_01) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_use_01 <- ggqqplot(subAI$facebook_use_01)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_use_01 <- ggqqplot(subAU$facebook_use_01)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_use_01, AIfacebook_use_01, AUfacebook_use_01)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 17.6}
+bartlett.test(facebook_use_01 ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 17.7}
+kable(anova(lm(facebook_use_01 ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 17.8}
+TukeyHSD(aov(lm(facebook_use_01 ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -2923,6 +4086,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 18.1}
+#normality check 
+FRfacebook_use_02 <- ggqqplot(subFR$facebook_use_02) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_use_02 <- ggqqplot(subDE$facebook_use_02)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_use_02 <- ggqqplot(subNL$facebook_use_02)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_use_02 <- ggqqplot(subPL$facebook_use_02)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_use_02 <- ggqqplot(subUK$facebook_use_02)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_use_02, DEfacebook_use_02, NLfacebook_use_02, PLfacebook_use_02, UKfacebook_use_02)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 18.2}
+bartlett.test(facebook_use_02 ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 18.3}
+kable(anova(lm(facebook_use_02 ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 18.4}
+TukeyHSD(aov(lm(facebook_use_02 ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 18.3}
@@ -2964,6 +4173,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 18.5}
+#normality check 
+AAfacebook_use_02 <- ggqqplot(subAA$facebook_use_02) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_use_02 <- ggqqplot(subAI$facebook_use_02)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_use_02 <- ggqqplot(subAU$facebook_use_02)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_use_02, AIfacebook_use_02, AUfacebook_use_02)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 18.6}
+bartlett.test(facebook_use_02 ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 18.7}
+kable(anova(lm(facebook_use_02 ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 18.8}
+TukeyHSD(aov(lm(facebook_use_02 ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3089,6 +4339,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 19.1}
+#normality check 
+FRfacebook_use_03 <- ggqqplot(subFR$facebook_use_03) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_use_03 <- ggqqplot(subDE$facebook_use_03)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_use_03 <- ggqqplot(subNL$facebook_use_03)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_use_03 <- ggqqplot(subPL$facebook_use_03)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_use_03 <- ggqqplot(subUK$facebook_use_03)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_use_03, DEfacebook_use_03, NLfacebook_use_03, PLfacebook_use_03, UKfacebook_use_03)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 19.2}
+bartlett.test(facebook_use_03 ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 19.3}
+kable(anova(lm(facebook_use_03 ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 19.4}
+TukeyHSD(aov(lm(facebook_use_03 ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 19.3}
@@ -3130,6 +4426,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 19.5}
+#normality check 
+AAfacebook_use_03 <- ggqqplot(subAA$age) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_use_03 <- ggqqplot(subAI$age)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_use_03 <- ggqqplot(subAU$age)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_use_03, AIfacebook_use_03, AUfacebook_use_03)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 19.6}
+bartlett.test(facebook_use_03 ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 19.7}
+kable(anova(lm(facebook_use_03 ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 19.8}
+TukeyHSD(aov(lm(facebook_use_03 ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3255,6 +4592,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 20.1}
+#normality check 
+FRfacebook_use_04 <- ggqqplot(subFR$facebook_use_04) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_use_04 <- ggqqplot(subDE$facebook_use_04)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_use_04 <- ggqqplot(subNL$facebook_use_04)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_use_04 <- ggqqplot(subPL$facebook_use_04)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_use_04 <- ggqqplot(subUK$facebook_use_04)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_use_04, DEfacebook_use_04, NLfacebook_use_04, PLfacebook_use_04, UKfacebook_use_04)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 20.2}
+bartlett.test(facebook_use_04 ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 20.3}
+kable(anova(lm(facebook_use_04 ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 20.4}
+TukeyHSD(aov(lm(facebook_use_04 ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 20.3}
@@ -3296,6 +4679,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 20.5}
+#normality check 
+AAfacebook_use_04 <- ggqqplot(subAA$facebook_use_04) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_use_04 <- ggqqplot(subAI$facebook_use_04)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_use_04 <- ggqqplot(subAU$facebook_use_04)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_use_04, AIfacebook_use_04, AUfacebook_use_04)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 20.6}
+bartlett.test(facebook_use_04 ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 20.7}
+kable(anova(lm(facebook_use_04 ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 20.8}
+TukeyHSD(aov(lm(facebook_use_04 ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3421,6 +4845,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 21.1}
+#normality check 
+FRfacebook_without_reading <- ggqqplot(subFR$facebook_without_reading) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_without_reading <- ggqqplot(subDE$facebook_without_reading)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_without_reading <- ggqqplot(subNL$facebook_without_reading)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_without_reading <- ggqqplot(subPL$facebook_without_reading)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_without_reading <- ggqqplot(subUK$facebook_without_reading)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_without_reading, DEfacebook_without_reading, NLfacebook_without_reading, PLfacebook_without_reading, UKfacebook_without_reading)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 21.2}
+bartlett.test(facebook_without_reading ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 21.3}
+kable(anova(lm(facebook_without_reading ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 21.4}
+TukeyHSD(aov(lm(facebook_without_reading ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 21.3}
@@ -3462,6 +4932,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 21.5}
+#normality check 
+AAfacebook_without_reading <- ggqqplot(subAA$facebook_without_reading) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_without_reading <- ggqqplot(subAI$facebook_without_reading)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_without_reading <- ggqqplot(subAU$facebook_without_reading)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_without_reading, AIfacebook_without_reading, AUfacebook_without_reading)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 21.6}
+bartlett.test(facebook_without_reading ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 21.7}
+kable(anova(lm(facebook_without_reading ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 21.8}
+TukeyHSD(aov(lm(facebook_without_reading ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3596,6 +5107,52 @@ ggplot(subsubfb,
 
 ```
 
+### nationalities (normality)
+
+```{r anova 22.1}
+#normality check 
+FRfacebook_friends <- ggqqplot(subFR$facebook_friends) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEfacebook_friends <- ggqqplot(subDE$facebook_friends)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLfacebook_friends <- ggqqplot(subNL$facebook_friends)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLfacebook_friends <- ggqqplot(subPL$facebook_friends)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKfacebook_friends <- ggqqplot(subUK$facebook_friends)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRfacebook_friends, DEfacebook_friends, NLfacebook_friends, PLfacebook_friends, UKfacebook_friends)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 22.2}
+bartlett.test(facebook_friends ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 22.3}
+kable(anova(lm(facebook_friends ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 22.4}
+TukeyHSD(aov(lm(facebook_friends ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 22.3}
@@ -3635,6 +5192,47 @@ ggplot(subsubfb,
   theme_light() + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
+```
+
+### awareness (normality)
+
+```{r anova 22.5}
+#normality check 
+AAfacebook_friends <- ggqqplot(subAA$facebook_friends) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIfacebook_friends <- ggqqplot(subAI$facebook_friends)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUfacebook_friends <- ggqqplot(subAU$facebook_friends)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAfacebook_friends, AIfacebook_friends, AUfacebook_friends)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 22.6}
+bartlett.test(facebook_friends ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 22.7}
+kable(anova(lm(facebook_friends ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 22.8}
+TukeyHSD(aov(lm(facebook_friends ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3758,6 +5356,52 @@ ggplot(subsubfb,
 
 ```
 
+### nationalities (normality)
+
+```{r anova 23.1}
+#normality check 
+FRmedia_frequency_07 <- ggqqplot(subFR$media_frequency_07) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEmedia_frequency_07 <- ggqqplot(subDE$media_frequency_07)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLmedia_frequency_07 <- ggqqplot(subNL$media_frequency_07)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLmedia_frequency_07 <- ggqqplot(subPL$media_frequency_07)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKmedia_frequency_07 <- ggqqplot(subUK$media_frequency_07)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRmedia_frequency_07, DEmedia_frequency_07, NLmedia_frequency_07, PLmedia_frequency_07, UKmedia_frequency_07)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 23.2}
+bartlett.test(media_frequency_07 ~ nationality, data = subanovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 23.3}
+kable(anova(lm(media_frequency_07 ~ nationality, data = subanovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 23.4}
+TukeyHSD(aov(lm(media_frequency_07 ~ nationality, data = subanovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 23.3}
@@ -3797,6 +5441,47 @@ ggplot(subsubfb,
   theme_light() + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
+```
+
+### awareness (normality)
+
+```{r anova 23.5}
+#normality check 
+AAmedia_frequency_07 <- ggqqplot(subAA$media_frequency_07) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AImedia_frequency_07 <- ggqqplot(subAI$media_frequency_07)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUmedia_frequency_07 <- ggqqplot(subAU$media_frequency_07)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAmedia_frequency_07, AImedia_frequency_07, AUmedia_frequency_07)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 23.6}
+bartlett.test(media_frequency_07 ~ awareness, data = subanovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 23.7}
+kable(anova(lm(media_frequency_07 ~ awareness, data = subanovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 23.8}
+TukeyHSD(aov(lm(media_frequency_07 ~ awareness, data = subanovaawa)))
 ```
 
 ### both (Tab)
@@ -3930,6 +5615,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 24.1}
+#normality check 
+FRpolitical_interest_average <- ggqqplot(FR$political_interest_average) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEpolitical_interest_average <- ggqqplot(DE$political_interest_average)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLpolitical_interest_average <- ggqqplot(NL$political_interest_average)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLpolitical_interest_average <- ggqqplot(PL$political_interest_average)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKpolitical_interest_average <- ggqqplot(UK$political_interest_average)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRpolitical_interest_average, DEpolitical_interest_average, NLpolitical_interest_average, PLpolitical_interest_average, UKpolitical_interest_average)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 24.2}
+bartlett.test(political_interest_average ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 24.3}
+kable(anova(lm(political_interest_average ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 24.4}
+TukeyHSD(aov(lm(political_interest_average ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 24.3}
@@ -3969,6 +5700,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 24.5}
+#normality check 
+AApolitical_interest_average <- ggqqplot(AA$political_interest_average) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIpolitical_interest_average <- ggqqplot(AI$political_interest_average)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUpolitical_interest_average <- ggqqplot(AU$political_interest_average)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AApolitical_interest_average, AIpolitical_interest_average, AUpolitical_interest_average)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 24.6}
+bartlett.test(political_interest_average ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 24.7}
+kable(anova(lm(political_interest_average ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 24.8}
+TukeyHSD(aov(lm(political_interest_average ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -4090,6 +5862,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 25.1}
+#normality check 
+FRINT <- ggqqplot(FR$INT) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEINT <- ggqqplot(DE$INT)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLINT <- ggqqplot(NL$INT)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLINT <- ggqqplot(PL$INT)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKINT <- ggqqplot(UK$INT)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRINT, DEINT, NLINT, PLINT, UKINT)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 25.2}
+bartlett.test(INT ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 25.3}
+kable(anova(lm(INT ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 25.4}
+TukeyHSD(aov(lm(INT ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 25.3}
@@ -4129,6 +5947,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 25.5}
+#normality check 
+AAINT <- ggqqplot(AA$INT) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIINT <- ggqqplot(AI$INT)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUINT <- ggqqplot(AU$INT)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AAINT, AIINT, AUINT)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 25.6}
+bartlett.test(INT ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 25.7}
+kable(anova(lm(INT ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 25.8}
+TukeyHSD(aov(lm(INT ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -4265,6 +6124,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 26.1}
+#normality check 
+FRpolitical_opinion_percentage <- ggqqplot(FR$political_opinion_percentage) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEpolitical_opinion_percentage <- ggqqplot(DE$political_opinion_percentage)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLpolitical_opinion_percentage <- ggqqplot(NL$political_opinion_percentage)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLpolitical_opinion_percentage <- ggqqplot(PL$political_opinion_percentage)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKpolitical_opinion_percentage <- ggqqplot(UK$political_opinion_percentage)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRpolitical_opinion_percentage, DEpolitical_opinion_percentage, NLpolitical_opinion_percentage, PLpolitical_opinion_percentage, UKpolitical_opinion_percentage)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 26.2}
+bartlett.test(political_opinion_percentage ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 26.3}
+kable(anova(lm(political_opinion_percentage ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 26.4}
+TukeyHSD(aov(lm(political_opinion_percentage ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 26.3}
@@ -4304,6 +6209,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 26.5}
+#normality check 
+AApolitical_opinion_percentage <- ggqqplot(AA$political_opinion_percentage) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIpolitical_opinion_percentage <- ggqqplot(AI$political_opinion_percentage)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUpolitical_opinion_percentage <- ggqqplot(AU$political_opinion_percentage)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AApolitical_opinion_percentage, AIpolitical_opinion_percentage, AUpolitical_opinion_percentage)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 26.6}
+bartlett.test(political_opinion_percentage ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 26.7}
+kable(anova(lm(political_opinion_percentage ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 26.8}
+TukeyHSD(aov(lm(political_opinion_percentage ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
@@ -4427,6 +6373,52 @@ kable(
 
 ```
 
+### nationalities (normality)
+
+```{r anova 27.1}
+#normality check 
+FRpolitical_opinion_test_total_percentage <- ggqqplot(FR$political_opinion_test_total_percentage) + 
+  labs(title = "France") +
+  theme(plot.title = element_text(hjust = 0.5))
+DEpolitical_opinion_test_total_percentage <- ggqqplot(DE$political_opinion_test_total_percentage)+ 
+  labs(title = "Germany") +
+  theme(plot.title = element_text(hjust = 0.5))
+NLpolitical_opinion_test_total_percentage <- ggqqplot(NL$political_opinion_test_total_percentage)+ 
+  labs(title = "Netherlands") +
+  theme(plot.title = element_text(hjust = 0.5))
+PLpolitical_opinion_test_total_percentage <- ggqqplot(PL$political_opinion_test_total_percentage)+ 
+  labs(title = "Poland") +
+  theme(plot.title = element_text(hjust = 0.5))
+UKpolitical_opinion_test_total_percentage <- ggqqplot(UK$political_opinion_test_total_percentage)+ 
+  labs(title = "UK") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(FRpolitical_opinion_test_total_percentage, DEpolitical_opinion_test_total_percentage, NLpolitical_opinion_test_total_percentage, PLpolitical_opinion_test_total_percentage, UKpolitical_opinion_test_total_percentage)
+
+```
+
+### nationalities (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 27.2}
+bartlett.test(political_opinion_test_total_percentage ~ nationality, data = anovanat)
+```
+
+### nationalities (anova)
+
+```{r anova 27.3}
+kable(anova(lm(political_opinion_test_total_percentage ~ nationality, data = anovanat)))
+```
+
+### nationalities (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 27.4}
+TukeyHSD(aov(lm(political_opinion_test_total_percentage ~ nationality, data = anovanat)))
+```
+
 ### awareness (Tab.)
 
 ```{r 27.3}
@@ -4466,6 +6458,47 @@ kable(
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+```
+
+### awareness (normality)
+
+```{r anova 27.5}
+#normality check 
+AApolitical_opinion_test_total_percentage <- ggqqplot(AA$political_opinion_test_total_percentage) + 
+  labs(title = "aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AIpolitical_opinion_test_total_percentage <- ggqqplot(AI$political_opinion_test_total_percentage)+ 
+  labs(title = "implicitly aware") +
+  theme(plot.title = element_text(hjust = 0.5))
+AUpolitical_opinion_test_total_percentage <- ggqqplot(AU$political_opinion_test_total_percentage)+ 
+  labs(title = "unaware") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+ggarrange(AApolitical_opinion_test_total_percentage, AIpolitical_opinion_test_total_percentage, AUpolitical_opinion_test_total_percentage)
+
+```
+
+### awareness (bartlett)
+
+Results of the Barlett Test:
+
+```{r anova 27.6}
+bartlett.test(political_opinion_test_total_percentage ~ awareness, data = anovaawa)
+```
+
+### awareness (anova)
+
+```{r anova 27.7}
+kable(anova(lm(political_opinion_test_total_percentage ~ awareness, data = anovaawa)))
+```
+
+### awareness (tukey)
+
+Results of the Tukey Test: 
+
+```{r anova 27.8}
+TukeyHSD(aov(lm(political_opinion_test_total_percentage ~ awareness, data = anovaawa)))
 ```
 
 ### both (Tab.)
