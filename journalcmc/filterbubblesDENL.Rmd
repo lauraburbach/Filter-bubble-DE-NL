@@ -60,17 +60,40 @@ output            : papaja::apa6_pdf
 ---
 
 ```{r setup, include = FALSE}
-library("papaja")
+#library("papaja")
 library(tidyverse)
 library(haven)
 library(sjlabelled)
-
+library(foreign)
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(dygraphs)
+library(knitr)
+library(dplyr)
+library(ggpubr)
+library(sjstats)
 ```
 
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+```{r import data, include = FALSE}
+dataset = read.spss("filterbubble.sav", use.value.labels=FALSE, to.data.frame=TRUE)
+
+dataset$nationality[dataset$nationality==0] <- "Netherlands"
+dataset$nationality[dataset$nationality==1] <- "Germany"
+dataset$nationality[dataset$nationality==2] <- "UK"
+dataset$nationality[dataset$nationality==3] <- "France"
+dataset$nationality[dataset$nationality==4] <- "Poland"
+
+dataset$awareness[dataset$awareness==0] <- "unaware"
+dataset$awareness[dataset$awareness==1] <- "implicitly aware"
+dataset$awareness[dataset$awareness==2] <- "aware"
 ```
 
 
@@ -148,19 +171,25 @@ Personality traits as such, and their influence on social media use and politica
 > $H_{6}$: The **Big Five** personality traits influence the awareness of filter bubbles regarding political opinion formation. 
 
 # Methods
+A questionnaire study was conducted to discover whether user diversity influences the awareness of filter bubbles regarding political opinion formation differently for different nationalities. For that purpose, the questionnaire was spread over the Internet in five different languages: German, Dutch, French, Englisch (UK) and Polish. Responses were collected on several different occasions between the spring of 2018 and 2019.  
 
+Upon starting with the questionnaire, the participants were given a brief introduction into the topic of the study and were urged to fully complete the questionnaire and answer honestly. Furthermore, the participants were informed that their answers could not lead back to them personally. In total, 1238 complete and valid responses were collected, the composition of which is depicted in table .... (table including gender/age distribution for each nationality should still be added). 
 
 ## Participants
 
 ## Material
 
 ## Procedure
+In this study, two independent variables were considered: nationality and filter bubble awareness. Nationality was derrived from the questionnaire the participants completed, whereas filter bubble awareness was calculated from the provided responses as described below.
 ### awareness groups
-To be able to test the influence of user diversity on the awareness of filter bubbles, we built three awareness groups. The awareness of filter bubbles was thereby seen as a combination of the liklihood of being subjected to a filter bubble and knowing what the term means. To measure the former, participants were presented with mock-up Facebook posts depicting polarizing political statements. Using a slider ranging between 0 and 100%, they indicated how much they agree to statement $i$ themselves ($(x_{pers})_i$) and what percentage of their population they think agree to statement $i$ ($(x_{pop})_{i}$). These indications were used to calculate a measure for the opinion differences the participants approximated: $$x_{filter} = \frac17 \sum_{i = 1}^{7}|(x_{pers})_i - (x_{pop})_i|$$ The filter bubble principle says that people in a filter bubble only perceive limited information which contains views similar to their own [@pariser2011]. We therefore assumed that participants are likely to be subjected to a filter bubble, if they approximate the differences differences between $x_{pers}$ and $x_{pop}$ to be smaller than they actually are. The actual differences for both populations were thereby calculated by taking the mean of the standard deviations of $x_{pers}$ for the seven items.  
-For the second part of filter bubble awareness, the questionnaire contained a yes-no question on whether the participant knew what is meant with the term *filter bubble*. By combining both aspects of filter bubble awareness, three awareness groups were formed, which are depicted in table ... 
+The influence of user diversity on the awareness of filter bubbles was tested by building three awareness groups. The level of awareness of filter bubbles was thereby seen as a combination of the likelihood of being subjected to a filter bubble and knowing what the term means.  
+
+To measure if the participants were likely to be subjected to a filter bubble, seven mock-up Facebook posts depicting polarizing political statements like *I do not understand why we allow more refugees to enter our country. It cannot go on like this!* were presented. Using sliders ranging from $0$ to $100%$, the participants both indicated to what extent they agree to the statement themselves ($x_p$) and what proportion of the population they thought would agree to the statement ($x_n$). The mean of the seven absolute differences $|x_p - x_n|$ indicated the size of the opinion differences the participants estimated between themselves and their country ($x_{filter}$). Additionally, for each nationality, the mean of the standard deviations for $x_p$ for the seven statements was calculated, which indicated the size of the actual opinion differences. The resulting value, $x_{diff}$, differed for each nationality. Since the filter bubble principle states that people in a filter bubble mainly perceive information containing views similar to their own [@pariser2011], it was assumed that a participant who is likely to be subjected to a filter bubble approximated the differences between $x_p$ and $x_n$ to be smaller than they actually are ($x_{filter} < x_{diff}$).  
+
+For the second part of filter bubble awareness, the questionnaire contained a yes-no question on whether the participants knew what is meant with the term *filter bubble*. From these two pieces of information, three awareness groups were built: *aware*, *implicitly aware*, *unaware*. The implicitly aware group thereby included both the participants who knew the term but were still subjected to a filter bubble and those who did not know the term but where also not subjected to a filter bubble. (table including distribution of awareness in different nationalities should still be added)
 
 ## Data analysis
-
+The statistical analysis was conducted in *R*. 
 # Results
 
 # Discussion
