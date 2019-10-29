@@ -1068,7 +1068,7 @@ kable(#create dataframe
               (df43[10, "Freq"]/nationality[5, "Freq"])*100)
         ),
       #format table
-        col.names = c("", "low education freq.", "low education perc.", "high education freq.", "high education perc."), 
+        col.names = c("", "high education freq.", "high education perc.", "low education freq.", "low education perc."), 
         align = c("r", "c", "c", "c", "c"), 
         caption = "Education distribution divided by nationality.", 
         digits = 0
