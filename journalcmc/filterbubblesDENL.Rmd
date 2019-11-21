@@ -56,7 +56,7 @@ draft             : no
 
 documentclass     : "apa6"
 classoption       : "man"
-output            : papaja::apa6_pdf
+output            : papaja::apa6_word
 ---
 
 ```{r setup, include = FALSE}
@@ -164,7 +164,7 @@ For the second part of filter bubble awareness, the questionnaire contained a ye
 # Results
 
 # Discussion
-
+different countriesl
 
 \newpage
 
