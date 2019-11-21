@@ -95,6 +95,11 @@ dataset$nationality[dataset$nationality==4] <- "Poland"
 dataset$awareness[dataset$awareness==0] <- "unaware"
 dataset$awareness[dataset$awareness==1] <- "implicitly aware"
 dataset$awareness[dataset$awareness==2] <- "aware"
+
+ggstatsplot::ggbetweenstats(dataset, nationality, age)
+
+dataset %>% names()
+
 ```
 
 
