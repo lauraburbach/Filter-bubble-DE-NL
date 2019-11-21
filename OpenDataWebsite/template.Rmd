@@ -26,7 +26,8 @@ library(car)
 ```
 
 ```{r import data, include = FALSE}
-dataset = read.spss("filterbubble.sav", use.value.labels=FALSE, to.data.frame=TRUE)
+filename <- here::here("filterbubble.sav")
+dataset = read.spss(filename, use.value.labels=FALSE, to.data.frame=TRUE)
 
 dataset$nationality[dataset$nationality==0] <- "Netherlands"
 dataset$nationality[dataset$nationality==1] <- "Germany"
