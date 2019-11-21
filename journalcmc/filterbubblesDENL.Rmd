@@ -60,7 +60,7 @@ output            : papaja::apa6_word
 ---
 
 ```{r setup, include = FALSE}
-#library("papaja")
+library("papaja")
 library(tidyverse)
 library(haven)
 library(sjlabelled)
@@ -83,7 +83,8 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 ```{r import data, include = FALSE}
-dataset = read.spss("filterbubble.sav", use.value.labels=FALSE, to.data.frame=TRUE)
+filename <- here::here("filterbubble.sav")
+dataset = read.spss(filename, use.value.labels=FALSE, to.data.frame=TRUE)
 
 dataset$nationality[dataset$nationality==0] <- "Netherlands"
 dataset$nationality[dataset$nationality==1] <- "Germany"
