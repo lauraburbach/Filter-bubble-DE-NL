@@ -35,7 +35,7 @@ cleaned %>% select(
 ) %>%
   unite("all", education_NL_other:vote_PL_other_party, sep = "") %>% 
   filter(!all == "") %>% 
-  View()
+  write_excel_csv("check_anonymity.csv")
 
 
 write_rds(file = here::here("data", "filterbubble_anonymized.rds"), x = cleaned)

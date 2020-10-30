@@ -11,8 +11,10 @@ cleaned1 <- raw %>%
 
 # Change everything to factors
 
-cleaned2 <- cleaned1 %>%  rename(b5_o1n = personality_01,
-         b5_a1 = personality_02)
+cleaned2 <- cleaned1 %>%  
+  rename(
+    b5_o1n = personality_01,
+    b5_a1 = personality_02)
 
 
 # rename variable to match scales
@@ -30,14 +32,14 @@ cleaned %>% select(starts_with("personality")) %>% map(get_label)
 
 
 
-
-cleaned3 <- cleaned2 %>% mutate(education = fct_collapse(education_NL, 
+# cleaning education ----
+cleaned3 <- cleaned2 %>% mutate(education = fct_collapse(education_NL, # # cleaning education NL ----
                                              low = c("no education/uncompleted primary school",
                                                      "primary school"),
                                              high = c("HBO diploma", 
                                                       "university bachelors degree"),
                                              other_level = c("other (please specify)"))) %>% 
-  mutate(education = fct_collapse(education_DE, 
+  mutate(education = fct_collapse(education_DE, # cleaning education DE ----
                                   low = c("no education",
                                           "Haupt-/Volksschulabschluss"),
                                   high = c("university bachelors degree", 
@@ -61,7 +63,7 @@ cleaned %>% filter(education_FR == 0) %>% nrow()
 
 
 # identify parties of countries with political alignment for all countries
-
+# TODO André : Zuordnung
 
 
 #save file
