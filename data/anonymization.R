@@ -14,5 +14,5 @@ source("data/data_clean.R")
 
 
 
-write_sav(here::here("data", "filterbubble_anonymized.sav"))
+write_sav(here::here("data", "filterbubble_anonymized.sav"), data = raw)
 
