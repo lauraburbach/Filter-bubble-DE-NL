@@ -83,18 +83,37 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 ```{r import data, include = FALSE}
-filename <- here::here("filterbubble.sav")
-dataset = read.spss(filename, use.value.labels=FALSE, to.data.frame=TRUE)
+filename <- here::here("data", "filterbubble_anonymized.sav")
 
-dataset$nationality[dataset$nationality==0] <- "Netherlands"
-dataset$nationality[dataset$nationality==1] <- "Germany"
-dataset$nationality[dataset$nationality==2] <- "UK"
-dataset$nationality[dataset$nationality==3] <- "France"
-dataset$nationality[dataset$nationality==4] <- "Poland"
+dataset = read.spss(filename,
+                    use.value.labels = FALSE,
+                    to.data.frame = TRUE)
 
-dataset$awareness[dataset$awareness==0] <- "unaware"
-dataset$awareness[dataset$awareness==1] <- "implicitly aware"
-dataset$awareness[dataset$awareness==2] <- "aware"
+
+
+# create a file for use in SmartPLS
+tmp <- haven::read_sav(filename) 
+
+tmp %>% select(-education_NL_other, -education_DE_other, -education_UK_other, -education_FR_other,
+               -education_PL_other, -questions_remarks, -filterbubble_prevention_method,
+               -vote_NL_other_party,
+               -vote_DE_other_party,
+               -vote_UK_other_party,
+               -vote_FR_other,
+               -vote_PL_other_party) %>% write_csv("filterbubble.csv") 
+
+
+dataset <- tmp
+
+dataset$nationality[dataset$nationality == 0] <- "Netherlands"
+dataset$nationality[dataset$nationality == 1] <- "Germany"
+dataset$nationality[dataset$nationality == 2] <- "UK"
+dataset$nationality[dataset$nationality == 3] <- "France"
+dataset$nationality[dataset$nationality == 4] <- "Poland"
+
+dataset$awareness[dataset$awareness == 0] <- "unaware"
+dataset$awareness[dataset$awareness == 1] <- "implicitly aware"
+dataset$awareness[dataset$awareness == 2] <- "aware"
 
 ggstatsplot::ggbetweenstats(dataset, nationality, age)
 

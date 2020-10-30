@@ -27,17 +27,17 @@ library(car)
 
 ```{r import data, include = FALSE}
 filename <- here::here("filterbubble.sav")
-dataset = read.spss(filename, use.value.labels=FALSE, to.data.frame=TRUE)
+dataset = haven::read_sav(filename)
 
-dataset$nationality[dataset$nationality==0] <- "Netherlands"
-dataset$nationality[dataset$nationality==1] <- "Germany"
-dataset$nationality[dataset$nationality==2] <- "UK"
-dataset$nationality[dataset$nationality==3] <- "France"
-dataset$nationality[dataset$nationality==4] <- "Poland"
-
-dataset$awareness[dataset$awareness==0] <- "unaware"
-dataset$awareness[dataset$awareness==1] <- "implicitly aware"
-dataset$awareness[dataset$awareness==2] <- "aware"
+# dataset$nationality[dataset$nationality==0] <- "Netherlands"
+# dataset$nationality[dataset$nationality==1] <- "Germany"
+# dataset$nationality[dataset$nationality==2] <- "UK"
+# dataset$nationality[dataset$nationality==3] <- "France"
+# dataset$nationality[dataset$nationality==4] <- "Poland"
+# 
+# dataset$awareness[dataset$awareness==0] <- "unaware"
+# dataset$awareness[dataset$awareness==1] <- "implicitly aware"
+# dataset$awareness[dataset$awareness==2] <- "aware"
 
 ```
 
@@ -61,7 +61,11 @@ PL <- subset(anovanat, nationality == "Poland")
 anovanat$awareness <- as.factor(anovanat$awareness)
 anovanat$awareness = factor(anovanat$awareness, labels = c("unaware", "implicitly aware", "aware"))
 
-AA <- subset(anovaawa, awareness == "aware")
+
+anovaawa$awareness <- as.factor(anovaawa$awareness)
+anovaawa$awareness = factor(anovaawa$awareness, labels = c("unaware", "implicitly aware", "aware"))
+
+AA <- anovaawa %>% filter(awareness == "aware") # subset(anovaawa, awareness == "aware")
 AI <- subset(anovaawa, awareness == "implicitly aware")
 AU <- subset(anovaawa, awareness == "unaware")
 ```
