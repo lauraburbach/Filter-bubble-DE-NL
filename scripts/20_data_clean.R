@@ -67,6 +67,8 @@ cleaned1 %>% select(starts_with("personality")) %>% map(get_label)
 ## map Education to high and low----
 # We want one column for education low and high (no-highschool, university and above) ISCED as reference
 
+# add remove dupliacte entries for PL/DE
+
 cleaned3 <- cleaned2 %>% unite(education_comb, c("education_NL", "education_DE", "education_FR", "education_PL", "education_UK"), na.rm = TRUE, remove = FALSE)
 
 cleaned3$education_comb
