@@ -3,14 +3,7 @@
 library(haven)
 
 
-raw <- read_sav(here::here("data", "filterbubble.sav"))
 
-
-
-# data transformation 
-# match scale and constructs
-
-source("data/data_clean.R")
 
 
 # remove IP address and timing

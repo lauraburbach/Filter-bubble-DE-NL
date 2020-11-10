@@ -1,8 +1,6 @@
 # Collect the data from the OSF Repository
 #
 
-
-
 library(osfr)
 data_folder <- "data"
 osf_name <- "j4gtz"

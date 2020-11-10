@@ -1,11 +1,11 @@
 # This file changes the raw data into a usable format
 library(sjlabelled)
 library(tidyverse)
+library(haven)
 
 
 
-
-
+raw <- read_sav(here::here("data", "filterbubble.sav"))
 
 # change everything to factors----
 cleaned1 <- raw %>% 
@@ -67,10 +67,17 @@ cleaned1 %>% select(starts_with("personality")) %>% map(get_label)
 ## map Education to high and low----
 # We want one column for education low and high (no-highschool, university and above) ISCED as reference
 
-cleaned3 <- unite(cleaned2, education_comb, c("education_NL", "education_DE", "education_FR", "education_PL", "education_UK"), na.rm = TRUE, remove = FALSE)
-cleaned3 <- cleaned3 %>% mutate(education = fct_collapse(education_comb, 
+cleaned3 <- cleaned2 %>% unite(education_comb, c("education_NL", "education_DE", "education_FR", "education_PL", "education_UK"), na.rm = TRUE, remove = FALSE)
+
+cleaned3$education_comb
+
+cleaned3$education_comb %>% as_factor() %>% levels()
+
+
+
+cleaned4 <- cleaned3 %>% mutate(education = fct_collapse(education_comb, 
                                                low = c(## Dutch education system low
-                                                       "no education/uncompleted primary school",
+                                                       #"no education/uncompleted primary school", # unused level
                                                        "primary school",
                                                        "secondary school without diploma",
                                                        "secondary school with diploma",
@@ -91,7 +98,7 @@ cleaned3 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
                                                        "baccalauréat",
                                                        
                                                        ## Polish education system low
-                                                       "bez wykształcenia",
+                                                       # "bez wykształcenia", #unused level
                                                        "podstawowe",
                                                        "gimnayjalne",
                                                        "zawodowe",
@@ -140,6 +147,4 @@ cleaned3 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
 
 
 #save file
-
-cleaned <- cleaned3
-
+write_rds(cleaned4, here::here("data", "clean_unanoymized.rds"))
