@@ -1,0 +1,21 @@
+
+# Methods
+A questionnaire study was conducted to discover whether user diversity influences the awareness of filter bubbles regarding political opinion formation differently for different nationalities. For that purpose, the questionnaire was spread over the Internet in five different languages: German, Dutch, French, Englisch (UK) and Polish. Responses were collected on several different occasions between the spring of 2018 and 2019.  
+
+Upon starting with the questionnaire, the participants were given a brief introduction into the topic of the study and were urged to fully complete the questionnaire and answer honestly. Furthermore, the participants were informed that their answers could not lead back to them personally. In total, 1238 complete and valid responses were collected, the composition of which is depicted in table .... (table including gender/age distribution for each nationality should still be added). 
+
+## Participants
+
+## Material
+
+## Procedure
+In this study, two independent variables were considered: nationality and filter bubble awareness. Nationality was derrived from the questionnaire the participants completed, whereas filter bubble awareness was calculated from the provided responses as described below.
+### awareness groups
+The influence of user diversity on the awareness of filter bubbles was tested by building three awareness groups. The level of awareness of filter bubbles was thereby seen as a combination of the likelihood of being subjected to a filter bubble and knowing what the term means.  
+
+To measure if the participants were likely to be subjected to a filter bubble, seven mock-up Facebook posts depicting polarizing political statements like *I do not understand why we allow more refugees to enter our country. It cannot go on like this!* were presented. Using sliders ranging from $0$ to $100%$, the participants both indicated to what extent they agree to the statement themselves ($x_p$) and what proportion of the population they thought would agree to the statement ($x_n$). The mean of the seven absolute differences $|x_p - x_n|$ indicated the size of the opinion differences the participants estimated between themselves and their country ($x_{filter}$). Additionally, for each nationality, the mean of the standard deviations for $x_p$ for the seven statements was calculated, which indicated the size of the actual opinion differences. The resulting value, $x_{diff}$, differed for each nationality. Since the filter bubble principle states that people in a filter bubble mainly perceive information containing views similar to their own [@pariser2011], it was assumed that a participant who is likely to be subjected to a filter bubble approximated the differences between $x_p$ and $x_n$ to be smaller than they actually are ($x_{filter} < x_{diff}$).  
+
+For the second part of filter bubble awareness, the questionnaire contained a yes-no question on whether the participants knew what is meant with the term *filter bubble*. From these two pieces of information, three awareness groups were built: *aware*, *implicitly aware*, *unaware*. The implicitly aware group thereby included both the participants who knew the term but were still subjected to a filter bubble and those who did not know the term but where also not subjected to a filter bubble. (table including distribution of awareness in different nationalities should still be added)
+
+## Data analysis
+The statistical analysis was conducted in *R*. 
