@@ -27,3 +27,12 @@ ggstatsplot::ggbetweenstats(dataset, nationality, age)
 
 names(dataset)
 
+
+
+
+
+dataset %>% mutate(gap1 = message_01_population - message_01_personal)
+
+
+mean(dataset$message_01_personal, na.rm = TRUE)
+
