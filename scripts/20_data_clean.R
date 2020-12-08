@@ -161,6 +161,10 @@ cleaned4 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
 # Overview over education
 cleaned4$education %>% qplot()
 
+#Rename Parties to match ParlGov Data
+# Add individual labels
+cleaned4 %>% rename(vote_DE_afd = vote_DE_afd,
+                    `vote_DE_b90/gru` = vote_DE_gruen)
 
 #save file
 write_rds(cleaned4, here::here("data", "clean_unanoymized.rds"))
