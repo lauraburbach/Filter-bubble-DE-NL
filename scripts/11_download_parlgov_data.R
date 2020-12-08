@@ -1,5 +1,7 @@
 # Collect the data from the OSF Repository
 #
+library(logger)
+log_info("Downloading ParlGov Data...")
 
 library(osfr)
 data_folder <- "data"
@@ -29,3 +31,28 @@ if (author_of_study) {
     osf_download(path = data_folder, conflicts = "overwrite")
 }
 
+
+
+# ----- CONVERT SQLITE TO RDS ------
+
+library(RSQLite)
+library(DBI)
+library(dbplyr)
+library(lubridate)
+
+con <- dbConnect(RSQLite::SQLite(), dbname = here::here("data","parlgov-development.db"))
+
+#con %>% dbListTables()
+positions <- tbl(con, "viewcalc_party_position") %>% collect()
+elections <- tbl(con, "view_election") %>% collect()
+
+party_data <- elections %>% left_join(positions) 
+
+# Cleaning code? 
+
+write_rds(here("data", "party_data.rds"), x = party_data)
+
+dbDisconnect(con)
+
+
+log_info("Done.")

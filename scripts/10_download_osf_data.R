@@ -1,5 +1,7 @@
 # Collect the data from the OSF Repository
 #
+library(logger)
+log_info("Downloading survey data...")
 
 library(osfr)
 data_folder <- "data"
@@ -28,3 +30,5 @@ if (author_of_study) {
   osf_retrieve_file(osf_name_anon) %>%
     osf_download(path = data_folder, conflicts = "overwrite")
 }
+
+log_info("Done.")

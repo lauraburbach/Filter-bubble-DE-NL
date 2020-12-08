@@ -1,5 +1,6 @@
 # This file should verify that no mistakes have happend in preparing the data in SPSS
-
+#
+# Some errors were found. And are documented here.
 
 library(testthat)
 library(tidyverse)
@@ -59,7 +60,6 @@ expect_false( check_no_multiple_column_entries(raw, select_not(raw, "education")
 
 
 ###
-
 check_vote_fields <- function(df, prefix1, prefix2) {
   res <- NULL
   try(
@@ -78,6 +78,10 @@ check_vote_fields <- function(df, prefix1, prefix2) {
 
 vote_fields <- c("vote_UK", "vote_DE", "vote_PL", "vote_FR", "vote_NL")
 
+# This fails, if we have multiple entries for voting for a single person.
+# Our data has this problem for Poland and Germany. The reason is in how the
+# survey was created in Qualtrics. The fields were transtlated in qualtrics and 
+#not set as branches in the survey procedure.
 all_combinations <- expand.grid(vote_fields, vote_fields) %>% filter(!Var1 == Var2) %>% mutate_all(as.character)
 
 error_idx <- NULL
@@ -107,7 +111,6 @@ raw %>% select(select_not(., "vote")) %>% View()
 
 
 qualtrics_data <- read_sav("20190606_filterbubbles_multinational/qualtrics.sav")
-
 
 temp <- qualtrics_data %>% select(respondent_id, vote_DE) %>% na.omit() %>% inner_join(
 qualtrics_data %>% select(respondent_id, vote_PL) %>% na.omit() ) 

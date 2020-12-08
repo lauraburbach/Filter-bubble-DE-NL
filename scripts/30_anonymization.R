@@ -1,14 +1,13 @@
 # Anonymization of raw data
+library(tidyverse)
+library(logger)
+log_info("Anonymizing data...")
 
-library(haven)
 
-
-
-
+cleaned <- read_rds(file = here::here("data", "clean_unanoymized.rds"))
 
 # remove IP address and timing
 cleaned <- cleaned %>% select(-ip_address, date_created, date_modified)
-
 
 
 # check free form entries for possible de-anonymization
@@ -28,11 +27,9 @@ cleaned %>% select(
 ) %>%
   unite("all", education_NL_other:vote_PL_other_party, sep = "") %>% 
   filter(!all == "") %>% 
-  write_excel_csv("check_anonymity.csv")
+  write_excel_csv(here::here("output", "check_anonymity.csv"))
 
 
 write_rds(file = here::here("data", "filterbubble_anonymized.rds"), x = cleaned)
 
-
-
-print(names(cleaned))
+log_info("Done.")

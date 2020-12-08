@@ -1,11 +1,18 @@
 # This file changes the raw data into a usable format
+#
+library(logger)
+log_info("Cleaning data...")
+
 library(sjlabelled)
+library(labelled)
 library(tidyverse)
 library(haven)
 
 
 
+# Load the raw data 
 raw <- read_sav(here::here("data", "filterbubble.sav"))
+
 
 # change everything to factors----
 cleaned1 <- raw %>% 
@@ -23,7 +30,7 @@ cleaned1 <- raw %>%
               "measured_filter_bubble", 
               "awareness", 
               "implicit_awareness"
-  ),  sjlabelled::as_label)
+  ),  to_character)
 
 
 # rename variable to match scales----
@@ -61,19 +68,26 @@ cleaned2 <- cleaned1 %>%  rename(b5_e1n = personality_01,
 
 
 # helper function to read labels----
-cleaned1 %>% select(starts_with("personality")) %>% map(get_label)
+cleaned2 %>% select(starts_with("personality")) %>% map(get_label)
 
 
 ## map Education to high and low----
 # We want one column for education low and high (no-highschool, university and above) ISCED as reference
 
 # add remove dupliacte entries for PL/DE
-
-cleaned3 <- cleaned2 %>% unite(education_comb, c("education_NL", "education_DE", "education_FR", "education_PL", "education_UK"), na.rm = TRUE, remove = FALSE)
-
-cleaned3$education_comb
-
-cleaned3$education_comb %>% as_factor() %>% levels()
+cleaned3 <-
+  cleaned2 %>% unite(
+    education_comb,
+    c(
+      "education_NL",
+      "education_DE",
+      "education_FR",
+#      "education_PL",  # is mapped on qualtrics using translation and not path switching
+      "education_UK"
+    ),
+    na.rm = TRUE,
+    remove = FALSE
+  )
 
 
 
@@ -101,11 +115,11 @@ cleaned4 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
                                                        
                                                        ## Polish education system low
                                                        # "bez wykształcenia", #unused level
-                                                       "podstawowe",
-                                                       "gimnayjalne",
-                                                       "zawodowe",
-                                                       "średnie (techniczne)",
-                                                       "średnie (policealne)", 
+                                                       #"podstawowe",
+                                                       #"gimnayjalne",
+                                                       #"zawodowe",
+                                                       #"średnie (techniczne)",
+                                                       #"średnie (policealne)", 
                                                        
                                                        ## British education system low
                                                        #"no education", 
@@ -128,12 +142,12 @@ cleaned4 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
                                                         ## French education system high
                                                         "Licence, bac+3",
                                                         "Master, bac+5",
-                                                        "Doctorat",
+                                                        #"Doctorat",            # not present in data
                                                         
                                                         ## Polish education system high
-                                                        "licencjat/inzynier",
-                                                        "magister",
-                                                        "tytuł doktora",
+                                                        #"licencjat/inzynier",
+                                                        #"magister",
+                                                        #"tytuł doktora",
                                                         
                                                         ## British education system high
                                                         "post-secondary education (level 5)",
@@ -144,9 +158,11 @@ cleaned4 <- cleaned3 %>% mutate(education = fct_collapse(education_comb,
 
 
 
-# identify parties of countries with political alignment for all countries
-# TODO André : Zuordnung
+# Overview over education
+cleaned4$education %>% qplot()
 
 
 #save file
 write_rds(cleaned4, here::here("data", "clean_unanoymized.rds"))
+
+log_info("Done.")

@@ -37,8 +37,5 @@ if (FALSE) {
   remotes::install_github("dstanley4/apaTables")
   
   install.packages("sigr")
-  
   install.packages("citr")
-  
-  
 }
