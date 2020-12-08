@@ -12,6 +12,9 @@ output:
 
 
 ```{r setup, include=FALSE}
+##
+###  Currently this file does not knit. Changes in R and data.frames are no longer compatible.
+##
 library(flexdashboard)
 library(ggplot2)
 library(plotly)
@@ -26,7 +29,7 @@ library(car)
 ```
 
 ```{r import data, include = FALSE}
-filename <- here::here("filterbubble.sav")
+filename <- here::here("data", "filterbubble.sav")
 dataset = haven::read_sav(filename)
 
 # dataset$nationality[dataset$nationality==0] <- "Netherlands"
@@ -525,8 +528,8 @@ The gender distribution in the different awareness groups was also significantly
 
 ### N = 1238 (Tab.)
 ```{r 2.1, fig.width=5}
-dataset$gender[dataset$gender==0] <- "male"
-dataset$gender[dataset$gender==1] <- "female"
+dataset$gender[dataset$gender == 0] <- "male"
+dataset$gender[dataset$gender == 1] <- "female"
 
 gender            <- as.data.frame(table((dataset$gender)))
 gender["Perc"]    <- round(gender$Freq / nrow(dataset) * 100, digits = 0)
