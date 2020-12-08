@@ -1,0 +1,94 @@
+---
+title: "Inspection of ParlGov Data"
+date: date: "`r format(Sys.time(), '%d %B, %Y')`"
+params: 
+  authors: "Authors are anonymized"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+---
+
+#### `r params$authors` {-}
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RSQLite)
+library(tidyverse)
+library(DBI)
+library(dbplyr)
+library(lubridate)
+
+con <- dbConnect(RSQLite::SQLite(), dbname = here::here("data","parlgov-development.db"))
+```
+
+# Inspection of PARlGOV Data
+
+```{r test}
+# Read in the database
+
+
+
+con %>% dbListTables()
+
+positions <- tbl(con, "viewcalc_party_position") %>% collect()
+
+
+tbl(con, "view_election") %>% collect() %>% pull(country_name) %>% unique()
+
+
+tbl(con, "view_election") %>% collect() %>% 
+  mutate(election_date = ymd(election_date)) %>% 
+  filter(country_name %in% c("Germany", "France", "Poland", "United Kingdom", "Netherlands")) %>% 
+  group_by(country_name, election_date) %>% 
+  summarise(lr = mean(vote_share * left_right, na.rm = TRUE),
+            lr_split = sd(vote_share / 100 * left_right, na.rm = TRUE)) %>% 
+  ggplot() +
+  aes(x = election_date) +
+  aes(y = lr) +
+  aes(size = lr_split) +
+  aes(colour = lr_split) +
+  aes(group = country_name) +
+  geom_point() +
+  geom_line(alpha = 0.5) +
+  scale_y_continuous(limits = c(0, 100)) +
+  scale_x_date() +
+  scale_color_viridis_c(option = "B") +
+  facet_wrap(~country_name)
+
+
+
+
+tbl(con, "view_election") %>% collect() %>% 
+  mutate(election_date = ymd(election_date)) %>% 
+  filter(country_name %in% c("Germany", "France", "Poland", "United Kingdom", "Netherlands")) %>% 
+  group_by(country_name, election_date) %>% 
+  summarise(lr = weighted.mean(left_right, vote_share, na.rm = TRUE),
+            lr_split = sqrt(Hmisc::wtd.var(left_right, vote_share, na.rm = TRUE))) %>% 
+  ggplot() +
+  aes(x = election_date) +
+  aes(y = lr) +
+  aes(size = lr_split) +
+  aes(colour = lr_split) +
+  aes(group = country_name) +
+  geom_point() +
+  geom_line(alpha = 0.5) +
+  scale_y_continuous(limits = c(0, 10)) +
+  scale_x_date() +
+  scale_color_viridis_c(option = "B") +
+  facet_wrap(~country_name)
+
+```
+
+
+
+```{r db_disconnect}
+
+dbDisconnect(con)
+
+```
+

@@ -1,0 +1,22 @@
+---
+title: "Title"
+date: date: "`r format(Sys.time(), '%d %B, %Y')`"
+params: 
+  authors: "Authors are anonymized"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+---
+
+#### `r params$authors` {-}
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+````
+
+# Template File
