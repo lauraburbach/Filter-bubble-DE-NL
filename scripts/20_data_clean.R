@@ -166,6 +166,8 @@ cleaned4$education %>% qplot()
 cleaned4 %>% rename(vote_DE_afd = vote_DE_afd,
                     `vote_DE_b90/gru` = vote_DE_gruen)
 
+cleaned4$vote_DE_other_party
+
 #save file
 write_rds(cleaned4, here::here("data", "clean_unanoymized.rds"))
 
