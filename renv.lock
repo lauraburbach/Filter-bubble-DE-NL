@@ -1206,13 +1206,6 @@
       "Repository": "CRAN",
       "Hash": "69fa7331e7410c2a2cb3f9868513904f"
     },
-    "nlme": {
-      "Package": "nlme",
-      "Version": "3.1-148",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "662f52871983ff3e3ef042c62de126df"
-    },
     "nloptr": {
       "Package": "nloptr",
       "Version": "1.2.2.2",
