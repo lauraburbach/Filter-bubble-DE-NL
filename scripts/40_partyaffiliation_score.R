@@ -64,6 +64,7 @@ party_raw %>% select(starts_with("VOTE_DE")) %>% names() %>% str_remove("vote_NL
 # output both at the same time for ease of creation
 cat("PL party_name_short:")
 party_data %>% filter(country_name == "Poland") %>% pull(party_name_short) 
+
 # our data
 cat("name_vote")
 party_raw %>% select(starts_with("VOTE_PL")) %>% names() %>% str_remove("vote_PL_") 
@@ -233,12 +234,28 @@ partys_mapped %>% filter(value_vote == "would vote for" | value_vote == "would p
 
 
 # TODO: get labels from vote_PL, vote_NL, vote_UK, vote_FR
-# then compare to party_data, shornames and create mapping
-party_raw %>% select(vote_PL) %>% labelled::val_labels()
+# then compare to party_data, shortnames and create mapping
+party_raw %>% select(vote_UK) %>% labelled::val_labels()
 # Now we map the real votes
 mapping <- tribble(
   ~name_vote, ~party_name_short,
   #Netherlands
+  "CDA", "CDA",
+  "CU", "CU",
+  "D66", "D66",
+  "GL", "GL",
+  "PvdA", "PvdA",
+  "PvdD", "PvdD",
+  "PVV", "PVV",
+  "SGP", "", 
+  "SP", "SP",
+  "VVD", "VVD",
+  "50+", "50+",
+  "Denk", "DENK",
+  "FVD", "FvD",
+  "Piratenpartij", "",
+  # Es gibt noch: VN
+
   #Germany
   "cdu", "CDU",
   "spd", "SPD",
@@ -246,12 +263,45 @@ mapping <- tribble(
   "bündnis 90/die grünen", "B90/Gru",
   "afd", "AfD",
   "die linke", "PDS|Li",
-  "piratenpartei", "Pi",
+  "piratenpartei", "Pi", #TODO: hier müssen die Parteien rein, links so wie wir sie genannt haben (party_raw %>% select(vote_PL) so sind die Daten, wie wir sie genannt haben) und rechts so wie in party_data (im Datensatz nachsehen)
+  
   # Poland
+  "Prawo i Sprawiedliwość (PiS)", "PiS",
+  "Platforma Obywatelska (PO)", "PO",
+  "Polskie Stronnictwo Ludowe (PSL)", "",
+  "Solidarna Polska (SP)", "",
+  "Sojusz Lewicy Demokratycznej (SLD)", "", 
+  "Ruch Narodowy (RN)", "",
+  "Wolni i Solidarni (WiS)", "",
+  "Unia Pracy (UP)", "",
+  "Biało-Czerwoni (BC)", "",
   
   # France
+  "La France insoumise (FI)", "FI",
+  "Parti communiste francais (PCF)", "PCF",
+  "Europe Écologie-Les Verts (EELV)", "V",
+  "Parti socialiste (PS)", "PS",
+  "La République En Marche (LREM", "REM",
+  "Mouvement démocrate (MoDem)", "",
+  "Les Républicains (LR)", "UMP|LR", # Hier nochmal nachsehen, ob so oder nur LR
+  "Debout la France (DLF)", "DLR|DLF", # nachsehen
+  "Front National (FN)", "FN",
+  # gibt noch ein paar mehr
   
   # UK
+  "Conservative and Unionist Party", "Con", # in Liste als Conservatives angegeben 
+  "Labour Party", "Lab",
+  "Liberal Democrats", "	APoNI", #Alliance Party of Northern Ireland; In der britischen Politik orientiert sich die Partei an den Liberal Democrats
+  "Change UK - The Independent Group", "CUK",
+  "Classic Liberals", "Lib", # in Liste als Liberals angegeben
+  "Green Party", "GP", 
+  "Irish National Party", "Sinn Féin", #? die einzige politische Partei, die sowohl im Norden als auch im Süden Irlands bedeutend aktiv ist
+  "Loyalist League", "",
+  "Libertarian Party UK", "",
+  "New Britain", "",
+  "Peoples Action Party", "",
+  "Plaid Cymru", "Plaid",
+  "UK First", "",
 )
 
 
