@@ -1,6 +1,7 @@
 # Collect the data from the OSF Repository
 #
 library(logger)
+library(tidyverse)
 log_info("Downloading ParlGov Data...")
 
 library(osfr)
