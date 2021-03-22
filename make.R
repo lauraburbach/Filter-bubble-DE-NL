@@ -1,5 +1,5 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
-# This file upload all html output to the OSF repository
+# This file uploads all html output to the OSF repository
 # Total time taken 8:12 mins
 
 # Setup ----
@@ -7,6 +7,19 @@ library(osfr)
 library(beepr)
 library(rmarkdown)
 osf_auth()
+
+message("Please make sure that all scripts from the 'scripts' directory have been exectuted.")
+
+if(interactive()){
+  print("Please make sure the configuration in the 00_data_preperation script are accurate.")
+  print("Are you the owner of the private repository?")
+  print("-----")
+  x <- readline("Do you want to download and recreate the data from OSF (y/n)?")  
+  if( x == "y") {
+    source(here::here("scripts/00_data_preperation.R"))
+  }
+}
+
 
 ## Paramters ----
 anon_folder <- "output/anonymized_html/"
@@ -40,7 +53,6 @@ rmds <-
 for (rmd in rmds) {
   rmarkdown::render(rmd, output_dir = anon_folder, params = anon_params)
   rmarkdown::render(rmd, output_dir = normal_folder, params = normal_authors)
-  
 }
 
 beep(2)

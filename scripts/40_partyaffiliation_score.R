@@ -390,7 +390,7 @@ party_data %>%
   left_join(mapping) %>%
   filter(is.na(name_vote)) %>% 
   arrange(desc(vote_share)) %>% 
-  filter(country_name_short == "POL") %>% 
+  filter(country_name_short == "DEU") %>% 
   head(15) %>% 
   nop()
 
@@ -451,7 +451,10 @@ party_votes_fixed %>%
   geom_col(position = "dodge") +
   coord_flip() +
   scale_y_continuous(label = scales::percent_format(accuracy = 1)) +
-  labs(x = NULL, y = "Percent")
+  scale_fill_discrete(labels = c("Our result", "Actual vote")) +
+  labs(x = NULL, y = "Percent", title = "Comparing our sample with actual voting results (France)")
+
+
 
 
 party_votes_fixed %>% 
@@ -474,7 +477,10 @@ party_votes_fixed %>%
   geom_col(position = "dodge") +
   coord_flip() +
   scale_y_continuous(label = scales::percent_format(accuracy = 1)) +
-  labs(x = NULL, y = "Percent")  
+  labs(x = NULL, y = "Percent") +
+  scale_fill_discrete(labels = c("Our result","Actual vote")) +
+  labs(x = NULL, y = "Percent", title = "Comparing our sample with actual voting results (Germany)")
+
 
 
 party_votes_fixed %>% 
@@ -497,7 +503,10 @@ party_votes_fixed %>%
   geom_col(position = "dodge") +
   coord_flip() +
   scale_y_continuous(label = scales::percent_format(accuracy = 1)) +
-  labs(x = NULL, y = "Percent")  
+  labs(x = NULL, y = "Percent")  +
+  scale_fill_discrete(labels = c("Actual vote","Our result")) +
+  labs(x = NULL, y = "Percent", title = "Comparing our sample with actual voting results (Netherlands)")
+
 
 
 party_votes_fixed %>% 
@@ -521,7 +530,10 @@ party_votes_fixed %>%
   geom_col(position = "dodge") +
   coord_flip() +
   scale_y_continuous(label = scales::percent_format(accuracy = 1)) +
-  labs(x = NULL, y = "Percent")  
+  labs(x = NULL, y = "Percent") + 
+  scale_fill_discrete(labels = c("Actual vote","Our result")) +
+  labs(x = NULL, y = "Percent", title = "Comparing our sample with actual voting results (UK)")
+
 
 
 party_votes_fixed %>% 
@@ -550,9 +562,81 @@ party_votes_fixed %>%
   geom_col(position = "dodge") +
   coord_flip() +
   scale_y_continuous(label = scales::percent_format(accuracy = 1)) +
-  labs(x = NULL, y = "Percent")  
+  labs(x = NULL, y = "Percent")  +
+  scale_fill_discrete(labels = c("Actual vote","Our result")) +
+  labs(x = NULL, y = "Percent", title = "Comparing our sample with actual voting results (Poland)")
 
 
+# Prepare data for analysis 
+
+
+
+party_votes_fixed %>% 
+  filter(nationality == "Poland") %>%  
+  mutate(name_vote = str_to_lower(labelled::to_character(vote_PL))) %>% 
+#  filter(!(name_vote == "other (please specifiy)")) %>% 
+#  filter(!(name_vote == "sojusz lewicy demokratycznej (sld)")) %>% # Parties we asked for that we don't see data in reality, damn
+#  filter(!(name_vote == "polskie stronnictwo ludowe (psl)")) %>% 
+#  filter(!(name_vote == "ruch narodowy (rn)")) %>% 
+#  filter(!(name_vote == "unia pracy (up)")) %>% 
+#  filter(!(name_vote == "solidarna polska (sp)")) %>% 
+#  filter(!(name_vote == "biało-czerwoni (bc)")) %>% 
+#  filter(!(name_vote == "wolni i solidarni (wis)")) %>% 
+  left_join(mapping %>% mutate(name_vote = str_to_lower(name_vote))) %>% 
+  left_join(party_data) %>% 
+  bind_rows(
+  party_votes_fixed %>% 
+    filter(nationality == "Germany") %>%  
+    mutate(name_vote = str_to_lower(labelled::to_character(vote_DE))) %>% 
+    left_join(mapping %>% mutate(name_vote = str_to_lower(name_vote))) %>% 
+    left_join(party_data)
+) %>% 
+  bind_rows(
+    party_votes_fixed %>% 
+      filter(nationality == "France") %>%  
+      mutate(name_vote = str_to_lower(labelled::to_character(vote_FR))) %>% 
+      left_join(mapping %>% mutate(name_vote = str_to_lower(name_vote))) %>% 
+      left_join(party_data)
+  ) %>% 
+  bind_rows(
+    party_votes_fixed %>% 
+      filter(nationality == "Netherlands") %>%  
+      mutate(name_vote = str_to_lower(labelled::to_character(vote_NL))) %>% 
+      left_join(mapping %>% mutate(name_vote = str_to_lower(name_vote))) %>% 
+      left_join(party_data)
+  ) %>% 
+  bind_rows(
+    party_votes_fixed %>% 
+      filter(nationality == "UK") %>%  
+      mutate(name_vote = str_to_lower(labelled::to_character(vote_UK))) %>% 
+      left_join(mapping %>% mutate(name_vote = str_to_lower(name_vote))) %>% 
+      left_join(party_data)
+  ) ->
+  data_final_plusedu
+               
+# Check education levels
+  data_final_plusedu %>% 
+  select(starts_with("edu")) %>% 
+  filter(education == "other (please specify)") %>% View()
+
+  
+  data_final_plusedu %>% 
+    mutate(education = as.character(education)) %>% 
+    # we found 1 person with low education in the other category
+    mutate(education = ifelse(education_DE_other == "Mittlere Reife", "low", education)) %>% 
+    # all others were considered high education
+    mutate(education = ifelse(education == "other (please specify)", "high", education)) %>% 
+    mutate(education = factor(education)) %>% 
+    select(-education_NL, -education_NL_other, -starts_with("vote_NL"),
+       -education_DE, -education_DE_other, -starts_with("vote_DE"),
+       -education_FR, -education_FR_other, -starts_with("vote_FR"),
+       -education_UK, -education_UK_other, -starts_with("vote_UK"),
+       -education_PL, -education_PL_other, -starts_with("vote_PL")) ->
+  data_final
+
+
+log_info("Writing final data...")
+write_rds(data_final, here::here("data", "final_data.rds"))
 
 
 log_info("Done.")

@@ -116,7 +116,7 @@ temp <- qualtrics_data %>% select(respondent_id, vote_DE) %>% na.omit() %>% inne
 qualtrics_data %>% select(respondent_id, vote_PL) %>% na.omit() ) 
 
 
-temp %>% View()
+#temp %>% View()
 
 
 library(haven)

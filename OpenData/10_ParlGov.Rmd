@@ -1,6 +1,6 @@
 ---
 title: "Inspection of ParlGov Data"
-date: date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 params: 
   authors: "Authors are anonymized"
 output: 
