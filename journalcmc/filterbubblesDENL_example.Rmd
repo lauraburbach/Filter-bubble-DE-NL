@@ -81,8 +81,8 @@ variable_names_DE <- names(rawDE)
 variable_labels_DE <- get_label(rawDE)
 
 de_codebook <- data.frame(oldvar = variable_names_DE,
-                         # newvar = variable_names_DE,
-                        #  description = variable_labels_DE)
+                          newvar = variable_names_DE,
+                          description = variable_labels_DE)
 
 
 write_csv2(de_codebook, "codebookDE.csv")
