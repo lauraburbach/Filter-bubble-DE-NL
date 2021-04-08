@@ -1,5 +1,5 @@
 ---
-title: "Title"
+title: "Scale Calculation"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 params: 
   authors: "Authors are anonymized"
@@ -23,19 +23,7 @@ library(gtsummary)
 dat <- read_rds(here::here("data", "final_data.rds"))
 ```
 
-# Data Analysis
-First, we do some basic descriptive analysis of our data. 
 
-
-## Demographic data
-
-```{r demo_descr}
-dat %>% select(nationality, gender, age, education, facebook) %>% 
-  tbl_summary(by = nationality) %>% 
-  add_n() %>% 
-  bold_labels()
-
-```
 
 # Calculating scales
 
@@ -71,6 +59,9 @@ dat %>% select(starts_with("b5_n")) %>%
   psych::alpha(check.keys = T) -> bfna
 
 ```
+
+## Scale Reliability Big Five
+
 The reliability of our scales vary from:
 
 - openness Cronbach's $\alpha = `r bfoa$total$std.alpha`$,
