@@ -1,0 +1,249 @@
+---
+title: "Hypothesis Tests"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params: 
+  authors: "Authors are anonymized"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+---
+
+#### `r params$authors` {-}
+
+
+```{r setup, include=FALSE}
+options(digits=3)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gtsummary)
+library(apastats)
+library(hrbrthemes)
+dataset <- read_rds(here::here("data", "final_data.rds"))
+
+ggplot2::theme_set(hrbrthemes::theme_ipsum_rc())
+
+```
+
+
+
+# Hypothesis 1: Demographic Features
+Demographic features influence the awareness of filter bubbles regarding political opinion formation (differently in different countries).  
+
+Analyzed variables:  
+
+* gender
+* age
+* education 
+
+## Gender
+
+```{r chi 2.1}
+gender.data <- data.frame(dataset$nationality, dataset$gender)
+gender.data <- table(dataset$nationality, dataset$gender)
+
+model <- chisq.test(gender.data)
+
+
+gender.data <- data.frame(dataset$awareness, dataset$gender)
+gender.data = table(dataset$awareness, dataset$gender)
+
+model2 <- chisq.test(gender.data)
+#describe.chi(model2$observed)
+
+```
+
+
+
+The gender distribution for the different countries was significantly different (`r describe.chi(model$observed)`). Especially for the dutch participants the gap between the amount of male ($64\%$) and female ($36\%$) participants was large.  
+
+The gender distribution in the different awareness groups was also significantly different (`r describe.chi(model2$observed)`). Gender thus influences awareness of filter bubbles regarding political opinion formation. 
+
+### N = 1238 (Tab.)
+```{r 2.1, fig.width=5}
+dataset %>% select(gender) %>% tbl_summary()
+```
+
+### N = 1238 (Fig.)
+```{r 2.2}
+
+ggplot(dataset) +
+  aes(x = gender) + 
+  geom_bar(position = "dodge", 
+           colour = "black", 
+           fill = c("#8ebae5","#00549f")) +
+  labs(title = "Gender distribution of complete dataset (N = 1238)", 
+        x = "gender", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Nationality and gender
+
+## Table
+
+
+```{r}
+dataset %>% select(nationality, gender) %>% tbl_summary(by = gender)
+```
+
+
+### Nationalities (Fig.)
+```{r 2.4}
+ggplot(dataset) +
+  aes(x = nationality, 
+      fill = gender) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Gender distribution divided by nationality", 
+        x = "nationality", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### Awareness (Fig.)
+
+```{r}
+ggplot(dataset) +
+  aes(x = awareness, 
+      fill = gender) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Gender distribution divided by awareness", 
+        x = "nationality", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+
+## Age
+
+
+```{r anova 3.2}
+model_b <- bartlett.test(age ~ nationality, data = dataset)
+model_anova <- (anova(lm(age ~ nationality, data = dataset)))
+model_eta <- effectsize::eta_squared(anova(lm(age ~ nationality, data = dataset)), partial = FALSE)
+
+TukeyHSD(aov(lm(age ~ nationality, data = dataset)))
+```
+
+
+The age distribution showed light-tailed normality for both the different nationalities and the awareness groups.  
+
+For the nationalities, the Barlett test was significant, thus not satisfying the ANOVA condition homogeneity of variances ($\chi^2 = 21.40, df = 4, p < .05$). Under these conditions, age seemed to differ significantly between nationalities ($F(4, 1233) = 3.41, p < .05$). However, the Tukey post-hoc test showed, that the age difference was only significant between Germany and the Netherlands.  
+
+For awareness, the Barlett test was not significant, thus satisfying the ANOVA condition of homogeneity of variances ($\chi^2 = 3.24, df = 2, p > .05$). Age signifcantly differs between the awareness groups ($F(2, 1235) = 25.52$, $p < .05$). The Tukey post-hoc test showed, that this difference was significant between all groups. On average, the unaware participants were the oldest ($M = 42.33$, $SD = 13.21$) and the aware participants the youngest ($M = 34.79$, $SD = 11.59$).  
+
+There was no significant interaction effect of nationality and awareness on age ($F(8, 1838) = 1.377$, $p > .05$). 
+
+
+```{r}
+dataset %>% select(age) %>% tbl_summary(
+  type = all_continuous() ~ "continuous2",
+  statistic = all_continuous() ~ c("{median} ({p25}, {p75})", "{min}, {max}")
+  )
+```
+
+```{r 3.2}
+ggplot(data=dataset, 
+       aes(age)) +
+  geom_histogram(binwidth = 1, 
+                 fill = "#8ebae5",
+                 colour = "white"
+                 ) +
+  #xlim(c(18,80)) +
+  scale_fill_grey() +
+  labs(title = "Age distribution of complete dataset (N = 1238)", 
+        x = "age", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+```{r}
+dataset %>% select(age, nationality) %>% tbl_summary(by = nationality, 
+  type = all_continuous() ~ "continuous2",
+  statistic = all_continuous() ~ c("{median} ({p25}, {p75})", "{min}, {max}")
+  )
+
+
+dataset %>% select(age, nationality) %>% 
+  ggplot() +
+  aes(x = nationality, y = age) +
+  geom_boxplot() +
+  stat_summary(fun.data = mean_se) +
+  geom_jitter(alpha = 0.1, width = 0.2, height = 0.0) +
+  coord_flip() +
+  scale_fill_grey() +
+  labs(title = "Age distribution of complete dataset by nationality (N = 1238)", 
+        y = "age", 
+        x = "Nation", 
+       caption = "Dot with bar denotes mean and standard error. Data points added with vertical jitter.") +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+```
+
+```{r qqplots_nationality_age}
+dataset %>% ggpubr::ggqqplot(x = "age", facet.by = c("nationality")) + theme_ipsum_rc() 
+```
+
+
+### Age and awareness
+
+```{r}
+dataset %>% select(awareness, age) %>% gtsummary::tbl_summary(by = awareness, type = all_continuous() ~ "continuous2",
+  statistic = all_continuous() ~ c("{mean} ({p25}, {p75})", "{min}, {max}"))
+```
+
+```{r}
+ggplot(dataset, 
+       aes(x = age)) + 
+  geom_histogram(binwidth=1, 
+                 fill = "#8ebae5",
+                 colour = "white") +
+  facet_grid(awareness ~ .) + 
+  scale_fill_grey() +
+  labs(title = "Age distribution by awareness", 
+        x = "age", 
+        y = "frequency") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r qqplots_aware_age}
+dataset %>% ggpubr::ggqqplot(x = "age", facet.by = c("awareness")) + theme_ipsum_rc() 
+```
+
+
+```{r anova 3.6}
+bartlett.test(age ~ awareness, data = dataset)
+anova(lm(age ~ awareness, data = dataset))
+effectsize::eta_squared(anova(lm(age ~ awareness, data = dataset)), partial = FALSE)
+
+
+test <- TukeyHSD(aov(lm(age ~ awareness, data = dataset)))
+```
+
+### Both
+```{r 3.8}
+ggplot(dataset, 
+       aes(x=nationality, 
+           y=age, 
+           fill = awareness
+           )) + 
+  geom_boxplot(color = "black") +
+  #stat_summary(position = position_dodge(width = 0.75), color = "lightgray") +
+  scale_fill_manual(values = c("#8ebae5","#407fb7","#00549f")) + 
+  labs(title = "Distribution age by nationality and awareness", 
+        x = "nationality", 
+        y = "age") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #facet_wrap(~nationality, scales = "free_x")#  +
+  coord_flip()
+```

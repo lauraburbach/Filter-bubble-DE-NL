@@ -13,6 +13,14 @@ Check for help <https://crsh.github.io/papaja_man/writing.html>
 Anova
 <https://cran.r-project.org/web/packages/apaTables/vignettes/apaTables.html>
 
+## How to generate the paper
+
+TODO.
+
+## How to generate the website
+
+-   Call the `generate_website.R` script in the root folder.
+
 ## Steps for Reproduction
 
 All scripts needed to run the analyses are in the scripts folders.

@@ -1,0 +1,73 @@
+---
+title: "Scale Calculation"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params: 
+  authors: "Authors are anonymized"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+---
+
+#### `r params$authors` {-}
+
+
+```{r setup, include=FALSE}
+options(digits=3)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gtsummary)
+dat <- read_rds(here::here("data", "final_data.rds"))
+```
+
+
+
+# Calculating scales
+
+In the following section we calculate the scales used in our survey. 
+
+## Big Five
+
+An exploratory factor analysis using MinRes shows, that the OCEN scales work well.
+However, the A scale seems to be confounded with answering tendency (skewd towards answering with agree).
+This is however, also explainable since agreebleness would measure how much people answer "agree" on a survey.
+
+
+```{r bigfive}
+dat %>% select(starts_with("b5")) %>% 
+  psych::fa(nfactors = 5)
+```
+
+
+```{r bigfive_individual}
+dat %>% select(starts_with("b5_o")) %>% 
+  psych::alpha(check.keys = T) -> bfoa
+
+dat %>% select(starts_with("b5_c")) %>% 
+  psych::alpha(check.keys = T) -> bfca
+
+dat %>% select(starts_with("b5_e")) %>% 
+  psych::alpha(check.keys = T) -> bfea
+
+dat %>% select(starts_with("b5_a")) %>% 
+  psych::alpha(check.keys = T) -> bfaa
+
+dat %>% select(starts_with("b5_n")) %>% 
+  psych::alpha(check.keys = T) -> bfna
+
+```
+
+## Scale Reliability Big Five
+
+The reliability of our scales vary from:
+
+- openness Cronbach's $\alpha = `r bfoa$total$std.alpha`$,
+- conscientiousness   $\alpha = `r bfca$total$std.alpha`$,
+- extraversion   $\alpha = `r bfea$total$std.alpha`$,
+- agreeableness   $\alpha = `r bfaa$total$std.alpha`$,
+- and neuroticism   $\alpha = `r bfna$total$std.alpha`$.
+
+

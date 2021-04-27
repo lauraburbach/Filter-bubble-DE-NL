@@ -1,0 +1,122 @@
+---
+title: "Introduction"
+date: "`r Sys.Date()`"
+
+
+
+#output:
+#  rmdformats::downcute:
+#    self_contained: true
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print = "75")
+opts_chunk$set(echo = FALSE,
+	             cache = TRUE,
+               prompt = FALSE,
+               tidy = TRUE,
+               comment = NA,
+               message = FALSE,
+               warning = FALSE)
+opts_knit$set(width = 75)
+
+
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+
+
+# Introduction
+
+In 2011, Eli Pariser published the book "The Filter Bubble - What the Internet Is Hiding from You" in which he introduced the concept of the filter bubble. He describes how perosanlized filtering algorithms will result in people only seeing media they want to see and that coincides with their already existing believes. As Pariser (2011, p. 9-10) puts it, people then end up in "unique universes of information" in which different people receive different truths. The study described on this web page deals with the users' awareness of these filter bubbles regarding political opinion formation and whether influecing factors differ depending on nationality. The following five countries were thereby taken into account:
+
+* Germany
+* The Netherlands
+* The United Kingdom
+* France
+* Poland
+
+
+# Hypotheses
+
+## Hypothesis 1: Demographic Features
+
+Demographic features influence the awareness of filter bubbles regarding political opinion formation (differently in different countries).  
+
+Analyzed variables:  
+
+* gender
+* age
+* education 
+
+## Hypothesis 2: Personality traits
+
+The Big Five personality traits influence the awareness of filter bubbles regarding political opinion formation (differently in different countries).   
+
+Analyzed variables:  
+
+* agreeableness
+* conscientiousness
+* extraversion
+* neurotism
+* openness to experience  
+
+These were measured using the Big Five Inventory by Rammenstedt, Kemper, Klein, Beierlein, and Kovaleva (2014). The question was Likert scale question (0 = completely disagree \& 5 = completely agree) with 10 subquestions, two for each personality traits. For each trait, one of the two questions was recoded to adjust the direction of the answers: the higher the value, the more the trait corresponds to the participant's personality. 
+
+
+## Hypothesis 3: Media Diversity
+
+Regular diverse media use influences the awareness of filter bubbles regarding political opinion formation (differently in different countries)  
+
+Analyzed variables:  
+
+* digital media diversity 
+* general media diversity
+* total media diversity
+* social media frequency
+* braodcast media frequency
+* print media frequency
+
+## Hypothesis 4: Facebook
+
+The way in which Facebook is used influences the awareness of filter bubbles regarding political opinion formation (differently in different countries).
+
+For this, first the mere having of a Facebook account was tested, after which the following variables were only tested on those participants with a Facebook account.
+
+Analyzed variables:
+
+* having an account
+* read only
+* share (messages with political content)
+* like (messages with political content)
+* comment (messages with palitical content)
+* activeness (messages with political content, no only reading included)
+* friends
+* frequency
+
+
+## Hypothesis 5: Political Interest
+
+Political interest influences the awareness of filter bubbles regarding political opinion formation (differently in different countries).  
+
+Analyzed variables:  
+
+* political interest
+* internal political efficacy
+
+
+## Hypothesis 6: Political Opinion
+
+Political opinion influences the awareness of filter bubbles regarding political opinion formation (differently in different countries).  
+
+Political opinion was thereby defined as the extent to which a participant has a left- or right-wing political opinion.
+
+Analyzed variables:  
+
+* estimated political opinion
+* calculated political opinion 
