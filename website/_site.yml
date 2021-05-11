@@ -22,8 +22,12 @@ navbar:
         - text: "Sample Description"
           href: 30_sample_description.html
         - text: "---------"
-        - text: "Hypotheses tests"
+        - text: "Hypotheses tests H1"
           href: 40_hypothesis_tests.html
+        - text: "Hypotheses tests H2"
+          href: 41_hypothesis_tests_h2.html
+        - text: "SEM"
+          href: 50_sem.html
     - text: "About"
       icon: fa-info
       href: about.html

@@ -1,0 +1,86 @@
+---
+title: "Hypothesis Tests H2"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params: 
+  authors: "Authors are anonymized"
+output: 
+  html_document:
+    number_sections: true
+    toc: true
+    toc_float: true
+    code_folding: hide
+    df_print: paged
+---
+
+#### `r params$authors` {-}
+
+
+```{r setup, include=FALSE}
+options(digits=3)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gtsummary)
+library(apastats)
+library(hrbrthemes)
+dataset <- read_rds(here::here("data", "final_data.rds"))
+
+ggplot2::theme_set(hrbrthemes::theme_ipsum_rc())
+
+```
+
+
+
+# SEM
+
+
+
+```{r}
+names(dataset)
+```
+
+
+
+```{r}
+library(seminr)
+
+to_num <- function(x) {
+  as.numeric(as.factor(x))
+}
+
+h_to_num <- function(x) {
+  as.numeric(haven::as_factor(x))
+}
+
+  
+
+dataset %>%   
+  mutate_if(is.character, to_num) %>% 
+  mutate_if(is.factor, to_num) %>% 
+  mutate_if(haven::is.labelled, h_to_num) %>% 
+  # select required variables
+  select(left_right, awareness, education, starts_with("b5")) %>% 
+  na.omit() -> sem_data  
+
+measurement_model <- seminr::constructs(
+  seminr::composite("left right", single_item("left_right")),
+  composite("filterbubble awareness", single_item("awareness")),
+  composite("demo education", single_item("education")),
+  composite("agreeableness", single_item(c("b5_a1", "b5_a2")))
+)
+
+structural_model <- seminr::relationships(
+  paths(from = "agreeableness", to = "left right"),
+  paths(from = "filterbubble awareness", to = "left right"),
+  paths(from = "demo education", to = c("filterbubble awareness", "left right"))
+)
+
+pls_model <- estimate_pls(measurement_model = measurement_model, 
+                          structural_model = structural_model, 
+                          data = sem_data)
+
+boot_model <- bootstrap_model(pls_model)
+
+plot(boot_model)
+  
+```
+

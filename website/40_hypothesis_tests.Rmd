@@ -83,7 +83,7 @@ ggplot(dataset) +
 
 ## Nationality and gender
 
-## Table
+### Table
 
 
 ```{r}
@@ -247,3 +247,91 @@ ggplot(dataset,
   #facet_wrap(~nationality, scales = "free_x")#  +
   coord_flip()
 ```
+
+```{r anova 3.9}
+summary(aov(age ~ nationality * awareness, data = dataset))
+```
+
+### Education 
+
+The Chi-Squared test showed a significant differences in level of education between the nationalities ($\chi^2=13.62$, $df = 4$, $p < .05$) and the awareness groups as well ($\chi^2=40.36$, $df = 2$, $p < .05$). Especially interesting is, that more highly educated participants were aware of the filter bubble than lower educated participants, whereas for both the implicitly aware and unaware group, more of the participants were lower educated, the difference being particularly big in the unaware group (low education 68\%).
+
+### N = 1238 (Tab.)
+
+```{r 4.1}
+dataset %>% select(education) %>% gtsummary::tbl_summary()
+```
+
+### N = 1238 (Fig.)
+
+```{r 4.2}
+ggplot(dataset) +
+  aes(x = education) + 
+  geom_bar(position = "dodge", 
+           colour = "black", 
+           fill = c("#8ebae5", "#00549f")) +
+  scale_fill_grey() + 
+  labs(title = "Education distribution of complete dataset (N = 1238)", 
+        x = "level of education", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (Tab.)
+```{r 4.3}
+dataset %>% select(nationality, education) %>% gtsummary::tbl_summary(by = nationality)
+```
+
+### nationalities (Fig.)
+```{r 4.4}
+ggplot(dataset) +
+  aes(x = nationality, fill = education) + 
+  geom_bar(position = "dodge", colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Education distribution by nationality", 
+        x = "nationality", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### nationalities (chi-squared)
+```{r chi 4.1}
+education.data <- data.frame(dataset$nationality, dataset$education)
+education.data = table(dataset$nationality, dataset$education)
+tst <- chisq.test(education.data) 
+
+```
+There are significant differences in education between countries (`r tst$observed %>% apastats::describe.chi()`).
+
+### awareness (Tab.)
+```{r 4.5}
+dataset %>% select(awareness, education) %>% gtsummary::tbl_summary(by = awareness)
+```
+
+### awareness (Fig.)
+```{r 4.6}
+ggplot(dataset) +
+  aes(x = awareness, 
+      fill = education) + 
+  geom_bar(position = "dodge", 
+           colour = "black") +
+  scale_fill_manual(values = c("#8ebae5","#00549f")) + 
+  labs(title = "Education distribution divided by awareness", 
+        x = "Awareness", 
+        y = "frequency") +
+  theme_light() + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+### awareness (chi-squared)
+```{r chi 4.2}
+education.data <- data.frame(dataset$awareness, dataset$education)
+education.data = table(dataset$awareness, dataset$education)
+
+tst <- chisq.test(education.data)
+```
+
+There are significant differences in education between awareness levels (`r tst$observed %>% apastats::describe.chi()`).
+
